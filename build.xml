@@ -1,0 +1,260 @@
+<project name="Tee" default="deploy"> 
+	<!-- set global properties for this build -->
+	<property name="src" value="src" />
+
+	<property name="prj.appname" value="Tee" />
+	<property name="prj.deploypath" value="/mnt/test/"/>
+	<property name="prj.tempdir" value="temp" />
+	<property name="prj.libs" value="/dati/jboss-3.2.5/lib" />
+	<property name="prj.libs2" value="/dati/CamelotLib" />
+	
+	<property name="xdoclet.path" value="/dati/tools/xdoclet-lib/lib/" />
+	<property name="xdoclet.generated" value="${prj.tempdir}/xdoclet-gen"/>
+	<property name="xdoclet.force" value="false"/>
+	<property name="xdoclet.verbose" value="true"/>
+	
+	<property name="java.src" value="src" />
+	<property name="java.classes" value="./classes" />
+
+	<property name="dist.temp" value="${prj.tempdir}/dist" />
+	<property name="dist" value="${dist.temp}" />
+	
+
+	<path id="project.class.path">
+		<pathelement path="${classpath}" />
+		<pathelement location="${prj.libs}/jboss-common.jar" />
+		<pathelement location="${prj.libs}/jboss-jmx.jar" />
+		<pathelement location="${prj.libs}/jboss-system.jar" />				
+		<pathelement location="${prj.libs2}/commons-beanutils.jar" />
+		<pathelement location="${prj.libs2}/commons-beanutils-core.jar" />
+		<pathelement location="${prj.libs2}/commons-beanutils-bean-collections.jar" />
+		<pathelement location="${prj.libs2}/commons-digester.jar" />
+		
+		<pathelement location="${prj.libs2}/jbossall-client.jar" />
+		<pathelement location="${prj.libs2}/axis-ant.jar" />
+		<pathelement location="${prj.libs2}/axis.jar" />
+		<pathelement location="${prj.libs2}/wsdl4j.jar" />
+		<pathelement location="${prj.libs2}/saaj.jar" />
+		<pathelement location="${prj.libs2}/aqapi.jar" />
+	</path>
+	
+	
+	
+	
+	<path id="xdoclet.class.path">
+		<pathelement path="${classpath}" />
+		<pathelement location="${prj.libs2}/jboss-j2ee.jar" />
+		<pathelement location="${prj.libs2}/jboss-common.jar" />
+		<pathelement location="${prj.libs2}/ra-xa-libs.jar" />
+		<pathelement location="${prj.libs2}/log4j.jar" />
+		<pathelement location="${prj.libs2}/jnp-client.jar" />
+		<pathelement location="${prj.libs2}/junit.jar" />
+		<pathelement location="${prj.libs2}/servlet.jar" />
+		<pathelement location="${prj.libs2}/LintecLib.jar" />
+		<pathelement location="${prj.libs2}/jdom.jar" />
+		<pathelement location="${prj.libs2}/oreillyServlet.jar" />
+		<pathelement location="${prj.libs2}/axis.jar" />
+		<pathelement location="${prj.libs2}/jaxrpc.jar" />
+		<fileset dir="${xdoclet.path}"  includes="**/*.jar"/>
+	</path>	
+
+	
+	<target name="prepare">
+		<!-- Create the time stamp -->
+		<tstamp/>
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${java.classes}" />
+	</target>
+
+
+	<target name="compile" depends="prepare,ws,xdoclet">
+		<tstamp/>
+		<mkdir dir="${java.classes}" />
+		<javac destdir="${java.classes}" debug="on" deprecation="off">
+			<src path="${java.src}" />
+			<src path="${prj.tempdir}/xdoclet/" />
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+
+
+	<target name="cleanDist">
+		<delete dir="${java.classes}" />
+		<delete dir="${dist.temp}" />
+		<delete dir="${prj.tempdir}" />
+	</target>
+
+	
+	<target name="dist" depends="cleanDist,compile">
+		<mkdir dir="${dist.temp}/jar" />
+		<jar jarfile="${dist.temp}/jar/${prj.appname}.jar">
+			<metainf dir="${prj.tempdir}/xdoclet/META-INF/" excludes="web-service.xml" />
+			<metainf dir="META-INF/" includes="jboss.xml"/>
+			<fileset dir="${java.classes}" />
+		</jar>
+		
+		<mkdir dir="${dist.temp}/sar" />
+		<jar jarfile="${dist.temp}/sar/${prj.appname}Descriptor.sar">
+			<metainf dir="META-INF/" includes="jboss-service.xml"/>
+			<!--metainf dir="META-INF/" /-->
+			<fileset file="tee-specification.xml"/>
+			<fileset file="tee-specification.xsd"/>
+		</jar>
+		
+		<mkdir dir="${dist.temp}/wsr" />
+		<jar jarfile="${dist.temp}/wsr/${prj.appname}.wsr">
+			<metainf dir="${prj.tempdir}/xdoclet/META-INF/" includes="web-service.xml"/>
+		</jar>
+		
+		<mkdir dir="${dist.temp}/ear" />
+		<jar jarfile="${dist.temp}/ear/700${prj.appname}.ear">
+			<fileset dir="${dist.temp}/jar" />
+			<fileset dir="${dist.temp}/sar" />
+			<fileset dir="${dist.temp}/wsr" />
+			<fileset dir=".">
+				<include name="META-INF/application.xml"/>
+				<include name="META-INF/jboss-app.xml"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	
+	<target name="distSplit" depends="cleanDist,compile">
+		<mkdir dir="${dist.temp}/jar" />
+		<jar jarfile="${dist.temp}/jar/${prj.appname}.jar">
+			<metainf dir="${prj.tempdir}/xdoclet/META-INF/" excludes="web-service.xml" />
+			<metainf dir="META-INF/" includes="jboss.xml"/>
+			<!--fileset dir="${java.classes}" includes="**/WS*"/-->
+			<!--fileset dir="${java.classes}" includes="**/interceptor/*Bean*"/-->
+			<fileset dir="${java.classes}" includes="**/interceptor/*Bean*,**/interceptor/WS*"/>
+			<!--fileset dir="${java.classes}" includes="**/*Bean.java" excludes="**/TeeMBean.java"/-->
+		</jar>
+		
+		<mkdir dir="${dist.temp}/jar-lib" />
+		<jar jarfile="${dist.temp}/jar-lib/${prj.appname}Lib.jar">
+			<fileset dir="${java.classes}" excludes="**/interceptor/*Bean*,**/interceptor/WS*"/>
+			<!--fileset dir="${java.classes}" excludes="**/*Bean.java"/>
+			<fileset dir="${java.classes}" includes="**/TeeMBean.java"/-->
+		</jar>
+				
+		<mkdir dir="${dist.temp}/sar" />
+		<jar jarfile="${dist.temp}/sar/${prj.appname}Descriptor.sar">
+			<metainf dir="META-INF/" includes="jboss-service.xml"/>
+			<fileset file="tee-specification.xml"/>
+			<fileset file="tee-specification.xsd"/>
+		</jar>
+		
+		<mkdir dir="${dist.temp}/wsr" />
+		<jar jarfile="${dist.temp}/wsr/${prj.appname}.wsr">
+			<metainf dir="${prj.tempdir}/xdoclet/META-INF/" includes="web-service.xml"/>
+		</jar>
+		
+		<mkdir dir="${dist.temp}/ear" />
+		<jar jarfile="${dist.temp}/ear/998${prj.appname}Engine.ear">
+			<fileset dir="${dist.temp}/jar" />
+			<fileset dir="${dist.temp}/sar" />
+			<fileset dir="${dist.temp}/wsr" />
+			<fileset dir=".">
+				<include name="META-INF/application.xml"/>
+				<include name="META-INF/jboss-app.xml"/>
+			</fileset>
+		</jar>
+		
+	</target>
+		
+	
+
+	<target name="javadoc">
+		<delete dir="docs/api" />
+		<mkdir dir="docs/api" />
+		<javadoc destdir="docs/api"
+				 author="true"
+				 version="true"
+				 use="true"
+				 windowtitle="Lince WebServices"
+				 doctitle="Lince WebServices"
+				 bottom="Copyright &#169; 2003 Lince S.p.A. All Rights Reserved.">
+		
+		    <packageset dir="src" defaultexcludes="yes">
+	    	  <include name="it/**" />
+		      <exclude name="it/**"/>
+		    </packageset>
+		</javadoc>
+	</target>
+	
+	<target name="clean">
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+		<delete dir="${prj.tempdir}" />
+	</target>
+
+	
+	<target name="deploy" depends="dist">
+		<copy file="${dist.temp}/ear/700${prj.appname}.ear" todir="${prj.deploypath}" />
+	</target>
+
+	
+	<target name="deploySplit" depends="distSplit">
+		<copy file="${dist.temp}/ear/998${prj.appname}Engine.ear" todir="${prj.deploypath}" />
+		<copy file="${dist.temp}/jar-lib/${prj.appname}Lib.jar" todir="${prj.deploypath}" />
+		<copy file="${dist.temp}/jar-lib/${prj.appname}Lib.jar" todir="${prj.libs2}" />
+	</target>
+
+	
+	<!-- target per il web service -->
+	<target name="ws">
+		<taskdef name="webserviceejbdoclet" classname="xdoclet.modules.ejb.EjbDocletTask" 
+	                classpathref="xdoclet.class.path"/>
+		
+	    <delete file="temp/xdoclet/META-INF/web-service.xml" ></delete>
+	    <webserviceejbdoclet destdir="temp/xdoclet"
+		     ejbspec="2.0"
+		     excludedtags="@version,@author">
+	      <fileset dir="${java.src}">
+	       <include name="**/interceptor/*.java"/> 
+	       <include name="**/event/*.java"/>
+	        
+	      </fileset>
+	    	
+	      <jbossnet webDeploymentName="Tee" 
+	      	prefix="tee" 
+	      	destdir="temp/xdoclet/META-INF" 
+	      	targetNameSpace="http://net.jboss.org/tee" />
+	    </webserviceejbdoclet>
+		
+	</target>
+
+	
+	<target name="xdoclet">
+		<taskdef
+			name="ejbdoclet" classname="xdoclet.modules.ejb.EjbDocletTask"
+			classpathref="xdoclet.class.path"
+		/>
+	    <delete file="temp/xdoclet/META-INF/ejb-jar.xml" ></delete>
+	    <delete file="temp/xdoclet/META-INF/jboss.xml" ></delete>
+		<ejbdoclet
+			destdir="${prj.tempdir}/xdoclet/"
+			excludedtags="@version,@author" ejbspec="2.0" force="${xdoclet.force}"
+		>
+			<fileset dir="${java.src}">
+				<include name="**/WS*"/>
+				<include name="**/*Bean.java"/>
+			</fileset>
+			<localinterface destdir="${prj.tempdir}/xdoclet/"/>
+			<localhomeinterface destdir="${prj.tempdir}/xdoclet/"/>
+			<remoteinterface destdir="${prj.tempdir}/xdoclet/"/>
+			<homeinterface destdir="${prj.tempdir}/xdoclet/"/>
+			<jboss version="3.2" destdir="${prj.tempdir}/xdoclet/META-INF"/>
+			
+			<deploymentdescriptor destdir="${prj.tempdir}/xdoclet/META-INF"/>
+		</ejbdoclet>
+		<taskdef
+			name="webdoclet" classname="xdoclet.modules.web.WebDocletTask"
+			classpathref="xdoclet.class.path"
+		/>
+	</target>
+	
+	
+	
+</project>

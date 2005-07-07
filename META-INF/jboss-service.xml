@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding ='UTF-8' ?>
+<!DOCTYPE server PUBLIC    
+                     "-//JBoss//DTD MBean Service 3.2//EN"
+                     "http://www.jboss.org/j2ee/dtd/jboss-service_3_2.dtd">
+<server>
+    <mbean code="it.javalinux.tee.mbean.Tee" 
+           name="it.javalinux:service=Tee">
+        <attribute name="SpecificationURLString">resource:tee-specification.xml</attribute>
+        <!--attribute name="SpecificationURLString">/home/oracle/jboss/server/default/tee-specification.xml</attribute-->
+    </mbean>
+    
+    <!--mbean code="it.javalinux.tee.mbean.Tee" 
+           name="it.javalinux:service=Tee2">
+        <attribute name="SpecificationURLString">/home/oracle/jboss/server/default/tee-specification2.xml</attribute>
+    </mbean-->
+</server> 
