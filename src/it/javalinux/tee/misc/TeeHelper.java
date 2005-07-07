@@ -40,7 +40,9 @@ public class TeeHelper {
         try {
             Logger.getLogger(this.getClass()).debug(new StringBuffer("Passing event to handler class ")
                     .append(handlerSpec.getHandlerClass()).toString());
-            Handler handler = (Handler)(Class.forName(handlerSpec.getHandlerClass()).newInstance());
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            Logger.getLogger(this.getClass()).info("classLoader: "+classLoader);
+            Handler handler = (Handler)(classLoader.loadClass(handlerSpec.getHandlerClass()).newInstance());
             handler.process(event, handlerSpec.getLogMe());
         } catch (Exception e) {
             Logger.getLogger(this.getClass()).error("An error occurred during event processing by handler "+
