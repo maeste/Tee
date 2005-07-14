@@ -5,7 +5,7 @@
 	<property name="prj.appname" value="Tee" />
 	<property name="prj.deploypath" value="/mnt/test/"/>
 	<property name="prj.tempdir" value="temp" />
-	<property name="prj.libs" value="/dati/jboss-3.2.5/lib" />
+	<property name="prj.libs" value="/dati/jboss/lib" />
 	<property name="prj.libs2" value="/dati/CamelotLib" />
 	
 	<property name="xdoclet.path" value="/dati/tools/xdoclet-lib/lib/" />
@@ -19,7 +19,6 @@
 	<property name="dist.temp" value="${prj.tempdir}/dist" />
 	<property name="dist" value="${dist.temp}" />
 	
-
 	<path id="project.class.path">
 		<pathelement path="${classpath}" />
 		<pathelement location="${prj.libs}/jboss-common.jar" />
@@ -37,9 +36,6 @@
 		<pathelement location="${prj.libs2}/saaj.jar" />
 		<pathelement location="${prj.libs2}/aqapi.jar" />
 	</path>
-	
-	
-	
 	
 	<path id="xdoclet.class.path">
 		<pathelement path="${classpath}" />
@@ -124,17 +120,12 @@
 		<jar jarfile="${dist.temp}/jar/${prj.appname}.jar">
 			<metainf dir="${prj.tempdir}/xdoclet/META-INF/" excludes="web-service.xml" />
 			<metainf dir="META-INF/" includes="jboss.xml"/>
-			<!--fileset dir="${java.classes}" includes="**/WS*"/-->
-			<!--fileset dir="${java.classes}" includes="**/interceptor/*Bean*"/-->
-			<fileset dir="${java.classes}" includes="**/interceptor/*Bean*,**/interceptor/WS*"/>
-			<!--fileset dir="${java.classes}" includes="**/*Bean.java" excludes="**/TeeMBean.java"/-->
+			<fileset dir="${java.classes}" includes="**/WS*"/>
 		</jar>
 		
 		<mkdir dir="${dist.temp}/jar-lib" />
 		<jar jarfile="${dist.temp}/jar-lib/${prj.appname}Lib.jar">
-			<fileset dir="${java.classes}" excludes="**/interceptor/*Bean*,**/interceptor/WS*"/>
-			<!--fileset dir="${java.classes}" excludes="**/*Bean.java"/>
-			<fileset dir="${java.classes}" includes="**/TeeMBean.java"/-->
+			<fileset dir="${java.classes}" />
 		</jar>
 				
 		<mkdir dir="${dist.temp}/sar" />
@@ -238,8 +229,7 @@
 			excludedtags="@version,@author" ejbspec="2.0" force="${xdoclet.force}"
 		>
 			<fileset dir="${java.src}">
-				<include name="**/WS*"/>
-				<include name="**/*Bean.java"/>
+				<include name="**/WS*.java" /> 
 			</fileset>
 			<localinterface destdir="${prj.tempdir}/xdoclet/"/>
 			<localhomeinterface destdir="${prj.tempdir}/xdoclet/"/>
