@@ -6,14 +6,17 @@ package it.javalinux.tee.event;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * @author Alessio
- * @jboss-net.xml-schema urn="tee:WSEvent"
+ * @jboss-net.xml-schema urn="tee:MapEvent"
  */
-public class WSEvent implements Event, Serializable {
+public class MapEvent implements Event, Serializable {
     
-    public WSEvent() {
+    private HashMap map = new HashMap();
+    
+    public MapEvent() {
         
     }
 
@@ -34,8 +37,14 @@ public class WSEvent implements Event, Serializable {
     }
     
     public String toString() {
-        return "I'm a WSEvent :-)";
+        return "I'm a MapEvent :-)";
     }
     
     
+    public HashMap getMap() {
+        return map;
+    }
+    public void setMap(HashMap map) {
+        this.map = map;
+    }
 }

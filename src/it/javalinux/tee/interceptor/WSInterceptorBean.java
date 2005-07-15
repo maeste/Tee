@@ -5,7 +5,7 @@
 package it.javalinux.tee.interceptor;
 
 import it.javalinux.tee.event.Event;
-import it.javalinux.tee.event.WSEvent;
+import it.javalinux.tee.event.MapEvent;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -72,12 +72,11 @@ public class WSInterceptorBean implements Interceptor, SessionBean {
 	 * @param event
 	 * @return
 	 * @ejb.interface-method view-type="local"
-	 * @jboss-net.web-method returnQName="interceptTemp"
+	 * @jboss-net.web-method returnQName="interceptMapEvent"
 	 */
-    public void InterceptTemp(WSEvent wsEvent) {
-        Logger.getLogger(this.getClass()).info("interceptTemp called!");
-        
-        this.intercept(wsEvent);
+    public void InterceptMapEvent(MapEvent mapEvent) {
+        Logger.getLogger(this.getClass()).info("interceptMapEvent called!");
+        this.intercept(mapEvent);
     }
     
 
