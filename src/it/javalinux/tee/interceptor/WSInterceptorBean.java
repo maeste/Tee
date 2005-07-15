@@ -81,14 +81,6 @@ public class WSInterceptorBean implements Interceptor, SessionBean {
     }
     
 
-    /* (non-Javadoc)
-     * @see it.javalinux.tee.interceptor.Interceptor#logMyCall()
-     */
-    public void logMyCall() {
-        // TODO Auto-generated method stub
-
-    }
-    
     public void ejbCreate() {
 
 	}

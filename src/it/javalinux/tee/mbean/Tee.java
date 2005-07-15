@@ -89,7 +89,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	 * Reads and parses the specification file mapping events to handlers and transports
 	 * 
 	 */
-	public void readSpecification() {
+	private void readSpecification() {
 	    if (!eventSpecMap.isEmpty()) {
 	        Logger.getLogger(this.getClass()).debug("Clearing eventSpecMap!");
 	        eventSpecMap.clear();

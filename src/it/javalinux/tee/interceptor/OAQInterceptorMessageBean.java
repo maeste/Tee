@@ -86,10 +86,6 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
 	}
 	
 	
-	public void logMyCall() {
-	    //TODO!!
-	}
-	
 	public void ejbCreate() {
     }
 

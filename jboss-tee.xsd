@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Alba (Lince Spa) -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by LINTEC (B.D.F. SPA) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Tee">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Interceptors">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="SessionBeanInterceptor" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EjbType">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="remote"/>
+													<xs:enumeration value="local"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="EjbName"/>
+										<xs:element name="JndiName"/>
+										<xs:element name="TransactionType" type="xs:string" default="Required" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="WSInterceptor" minOccurs="0"/>
+							<xs:element name="OAQInterceptor" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EjbName"/>
+										<xs:element name="ContainerConfigurationName"/>
+										<xs:element name="DestinationType">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="queue"/>
+													<xs:enumeration value="topic"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="DestinationJndiName"/>
+										<xs:element name="QueueConnectionFactory"/>
+										<xs:element name="TopicConnectionFactory"/>
+										<xs:element name="URL"/>
+										<xs:element name="Username"/>
+										<xs:element name="Password"/>
+										<xs:element name="PayloadFactory"/>
+										<xs:element name="Schema"/>
+										<xs:element name="Destination"/>
+										<xs:element name="AcknowledgeMode" type="xs:string" default="Auto-acknowledge" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="JMSInterceptor" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EjbName"/>
+										<xs:element name="ContainerConfigurationName"/>
+										<xs:element name="DestinationType">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="queue"/>
+													<xs:enumeration value="topic"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="DestinationJndiName"/>
+										<xs:element name="QueueConnectionFactory" minOccurs="0"/>
+										<xs:element name="TopicConnectionFactory" minOccurs="0"/>
+										<xs:element name="AcknowledgeMode" type="xs:string" default="Auto-acknowledge" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Event" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Handler" type="HandlerType" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="Transport" type="TransportType" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="EventClass"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="UnknownEvent">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Handler" type="HandlerType" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="Transport" type="TransportType" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="TransportType">
+		<xs:choice>
+			<xs:element name="CustomTransport">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TransportClass"/>
+						<xs:element name="Attribute" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Name"/>
+									<xs:element name="Type"/>
+									<xs:element name="Value"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Log4jTransport">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DebugLevel"/>
+						<xs:element name="Prefix">
+							<xs:complexType>
+								<xs:choice>
+									<xs:element name="EventClassName"/>
+									<xs:element name="TransportClassName"/>
+									<xs:element name="Custom"/>
+								</xs:choice>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="HibernateTransport">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="HibernableEventClass"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="HandlerType">
+		<xs:sequence>
+			<xs:element name="HandlerClass"/>
+			<xs:element name="LogMe" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

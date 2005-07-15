@@ -18,8 +18,6 @@ import org.jboss.system.ServiceMBean;
  */
 public interface TeeMBean extends ServiceMBean{
     
-	public void readSpecification();
-
 	public void process(Event event);
 	
 	/**

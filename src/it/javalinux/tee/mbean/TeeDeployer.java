@@ -7,12 +7,10 @@
 package it.javalinux.tee.mbean;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Iterator;
-import java.util.jar.JarFile;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
@@ -25,7 +23,6 @@ import org.jboss.deployment.SubDeployer;
 import org.jboss.deployment.SubDeployerSupport;
 import org.jboss.util.file.ArchiveBrowser;
 import org.jboss.util.file.ClassFileFilter;
-import org.jboss.util.file.JarUtils;
 
 public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeDeployerMBean {
 	
@@ -45,7 +42,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	 * @jmx:managed-operation
 	 */
 	public boolean accepts(DeploymentInfo di) {
-//		To be accepted the deployment's root name must end in jar
+	    //To be accepted the deployment's root name must end in tee
 		String urlStr = di.url.getFile();
 		if( !urlStr.endsWith("tee") && !urlStr.endsWith("-tee/") && !urlStr.endsWith("-tee.xml") ) {
 			return false;
@@ -64,8 +61,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	public void init(DeploymentInfo di) throws DeploymentException {
 		try {
 			
-			if (di.watch == null)
-			{
+			if (di.watch == null) {
 				// resolve the watch
 				if (di.url.getProtocol().equals("file")) {
 					File file = new File(di.url.getFile());
@@ -77,16 +73,11 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 						} else {
 							di.watch = di.url;
 						}
-					}
-					// If directory we watch the xml files
-					else
-					{
-						
+					} else {
+					    //If directory we watch the xml files
 						di.watch = new URL(di.url, "META-INF/jboss-tee.xml");
 					}
-				}
-				else
-				{
+				} else {
 					// We watch the top only, no directory support
 					di.watch = di.url;
 				}
@@ -156,8 +147,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	 * @throws DeploymentException if an error occurs
 	 * @jmx:managed-operation
 	 */
-	public void create(DeploymentInfo di)
-	throws DeploymentException
+	public void create(DeploymentInfo di) throws DeploymentException
 	{
 		try
 		{
