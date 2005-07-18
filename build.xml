@@ -126,13 +126,15 @@
 		<mkdir dir="${dist.temp}/jar-lib" />
 		<jar jarfile="${dist.temp}/jar-lib/${prj.appname}Lib.jar">
 			<fileset dir="${java.classes}" />
+			<fileset dir="xsl" />
+			<fileset file="jboss-tee.xsd"/>
 		</jar>
 				
 		<mkdir dir="${dist.temp}/sar" />
 		<jar jarfile="${dist.temp}/sar/${prj.appname}Descriptor.sar">
 			<metainf dir="META-INF/" includes="jboss-service.xml"/>
-			<fileset file="tee-specification.xml"/>
-			<fileset file="tee-specification.xsd"/>
+			<!--fileset file="tee-specification.xml"/>
+			<fileset file="tee-specification.xsd"/-->
 		</jar>
 		
 		<mkdir dir="${dist.temp}/wsr" />

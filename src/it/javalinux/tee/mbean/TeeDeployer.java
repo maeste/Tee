@@ -8,21 +8,36 @@ package it.javalinux.tee.mbean;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Iterator;
+import java.util.Properties;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.Notification;
 import javax.management.ObjectName;
+import javax.naming.InitialContext;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.jboss.deployment.DeploymentException;
 import org.jboss.deployment.DeploymentInfo;
 import org.jboss.deployment.SubDeployer;
 import org.jboss.deployment.SubDeployerSupport;
+import org.jboss.jmx.adaptor.rmi.RMIAdaptor;
+import org.jboss.logging.Logger;
 import org.jboss.util.file.ArchiveBrowser;
 import org.jboss.util.file.ClassFileFilter;
+import org.w3c.dom.Document;
 
 public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeDeployerMBean {
 	
@@ -35,6 +50,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 		setSuffixes(new String[]{".tee", "-tee.xml"});
 		setRelativeOrder(RELATIVE_ORDER_100);
 	}
+	
 	/**
 	 * Returns true if this deployer can deploy the given DeploymentInfo.
 	 *
@@ -60,7 +76,6 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	 */
 	public void init(DeploymentInfo di) throws DeploymentException {
 		try {
-			
 			if (di.watch == null) {
 				// resolve the watch
 				if (di.url.getProtocol().equals("file")) {
@@ -82,48 +97,55 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 					di.watch = di.url;
 				}
 			}
-			File file2 = new File(this.tempDeployDir + "/prova.jar");
-			file2.mkdir();
-			File file3 = new File(this.tempDeployDir + "/prova.jar/META-INF");
-			file3.mkdir();
+			//jboss-tee.xml parsing...
+			Document jbossTeeDocument = this.readDocument(new File(di.watch.getFile()));
+			//TODO! Inserire controlli: validazione, cose mancanti (tipo uno potrebbe non avere il webservice)
 			
-			File file4 = new File(this.tempDeployDir + "/prova.jar/META-INF/ejb-jar.xml");
-			FileWriter fw = new FileWriter(file4);
-			fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
-"<!DOCTYPE ejb-jar PUBLIC \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN\" \"http://java.sun.com/dtd/ejb-jar_2_0.dtd\"> " +
-"<ejb-jar > " +
-"   <enterprise-beans>" +
-"      <session >" +
-"         <description><![CDATA[]]></description>" +
-"         <display-name>WSInterceptor Bean</display-name>" +
-"         <ejb-name>WSInterceptor</ejb-name>" +
-"         <local-home>it.javalinux.tee.WSinterceptorHome</local-home>" +
-"         <local>it.javalinux.tee.WSInterceptor</local>" +
-"         <ejb-class>it.javalinux.tee.interceptor.WSInterceptor</ejb-class>" +
-"         <session-type>Stateless</session-type>" +
-"         <transaction-type>Container</transaction-type>" +
-"      </session>" +
-"   </enterprise-beans>" +
-"   <container-transaction >" +
-"      <method >" +
-"         <ejb-name>WSInterceptor</ejb-name>" +
-"          <method-name>*</method-name>" +
-"       </method>" +
-"       <trans-attribute>Required</trans-attribute>" +
-"    </container-transaction>" +
-"</ejb-jar>" );
-			fw.flush();
-			fw.close();
+			//ejb-jar.xml
+			File jar = new File(this.tempDeployDir + "/jboss-tee-dep.jar");
+			jar.mkdir();
+			File jarMetaInf = new File(jar,"META-INF");
+			jarMetaInf.mkdir();
+			File ejbJarXml = new File(jarMetaInf,"ejb-jar.xml");
+			ejbJarXml.createNewFile();
+			this.applyXsl("/jboss-tee2ejb-jar.xsl", jbossTeeDocument, ejbJarXml);
+			log.info("generated file: "+ejbJarXml.getAbsolutePath());
 			
+			//jboss.xml
+			File jbossXml = new File(jarMetaInf,"jboss.xml");
+			this.applyXsl("/jboss-tee2jboss.xsl", jbossTeeDocument, jbossXml);
+			log.info("generated file: "+jbossXml.getAbsolutePath());
+			
+			new DeploymentInfo(jar.toURL(), di, getServer());
+			
+			//jboss-service.xml
+			File sar = new File(this.tempDeployDir + "/jboss-tee-dep.sar");
+			sar.mkdir();
+			File sarMetaInf = new File(sar,"META-INF");
+			sarMetaInf.mkdir();
+			File jbossServiceXml = new File(sarMetaInf,"jboss-service.xml");
+			this.applyXsl("/jboss-tee2jboss-service.xsl", jbossTeeDocument, jbossServiceXml);
+			log.info("generated file: "+jbossServiceXml.getAbsolutePath());
+			new DeploymentInfo(jbossServiceXml.toURL(), di, getServer());
+			
+			//web-service.xml
+			File wsr = new File(this.tempDeployDir + "/jboss-tee-dep.wsr");
+			wsr.mkdir();
+			File wsrMetaInf = new File(wsr,"META-INF");
+			wsrMetaInf.mkdir();
+			File webServiceXml = new File(wsrMetaInf,"web-service.xml");
+			this.applyXsl("/jboss-tee2web-service.xsl", jbossTeeDocument, webServiceXml);
+			log.info("generated file: "+webServiceXml.getAbsolutePath());
+	//		new DeploymentInfo(wsr.toURL(), di, getServer()); //TODO!! Ripristinare per i WS...
+			
+			//eventualmente qui si può decidere di scompattare/copiare i jar contenuti...
+			//se mettiamo assieme gli eventi (nel caso fare come nell'EARDeployer, con extractNestedJar)
+						
 			//JarUtils.jar(new FileOutputStream(file2),file3);
-			log.info("AAA");
-			log.info(file2.toURL());
+			
 			//this.addDeployableJar(di,new JarFile(file2));
-			new DeploymentInfo(file2.toURL(), di, getServer());
-		}
-		catch (Exception e)
-		{
-			log.error("failed to parse TEE document: ", e);
+		} catch (Exception e) {
+			log.error("Failed to parse TEE document: ", e);
 			throw new DeploymentException(e);
 		}
 		super.init(di);
@@ -181,8 +203,31 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	 * @throws DeploymentException if an error occurs
 	 * @jmx:managed-operation
 	 */
-	public void start(DeploymentInfo di) throws DeploymentException
-	{
+	public void start(DeploymentInfo di) throws DeploymentException {
+		log.info("start called...");
+		RMIAdaptor rmiserver = null;
+        try {
+			Properties prop = new Properties();
+	        prop.put( "java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory" );
+	        prop.put( "java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces" );
+	        prop.put( "java.naming.provider.url", "jnp://localhost:1099");
+	        InitialContext ctx = new InitialContext(prop);
+	        Logger.getLogger(this.getClass()).debug("Looking up RMI adaptor...");
+            rmiserver = (RMIAdaptor) ctx.lookup("jmx/invoker/RMIAdaptor");
+            if( rmiserver == null ) Logger.getLogger(this.getClass()).debug( "RMIAdaptor is null");
+            ObjectName teeOName = new ObjectName("it.javalinux:service=TeeLince"); //TODO!!!
+            Object[] parArray = {di.watch.getFile()};
+            System.out.println("watch:"+di.watch.getFile()); //TODO è sempre giusto? provare nel caso di jar
+            String[] signArray = {"java.lang.String"};
+            Logger.getLogger(this.getClass()).debug("Invoking service...");
+            rmiserver.invoke(teeOName,"setSpecificationURLString",parArray,signArray);
+            rmiserver.invoke(teeOName,"readSpecification",null,null);
+		} catch (Exception e) {
+			Logger.getLogger(this.getClass()).error("Error calling Tee service!");
+			StringWriter sw = new StringWriter();
+    		e.printStackTrace(new PrintWriter(sw));
+    		Logger.getLogger(this.getClass()).error(sw.toString());
+		}
 	}
 	
 	/**
@@ -237,6 +282,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	public void destroy(DeploymentInfo di)
 	//throws DeploymentException
 	{
+		log.info("destroy called...");
 	}
 	
 	/**
@@ -247,6 +293,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	 */
 	protected void startService() throws Exception
 	{
+		log.info("startService called...");
 		super.startService();
 	}
 	
@@ -255,5 +302,31 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	{
 		return name == null ? OBJECT_NAME : name;
 	}
+	
+	private Document readDocument(File file) throws Exception  {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		return factory.newDocumentBuilder().parse(file);
+	}
+	
+	private boolean validate(File xmlFile, String xsdPath) {
+		return true; //TODO!!!
+	}
+	
+	
+	private void applyXsl(String xslName, Document document, File destFile) throws Exception {
+		TransformerFactory factory = TransformerFactory.newInstance();
+		InputStream is = Tee.class.getResourceAsStream(xslName); //is there a better way?
+		Templates templ = factory.newTemplates(new StreamSource(is));
+		Transformer transformer = templ.newTransformer();
+		DOMSource source = new DOMSource(document);
+		FileWriter writer = new FileWriter(destFile);
+		StreamResult result = new StreamResult(writer);
+		transformer.setOutputProperties(templ.getOutputProperties()); //to emit attributes of tag <xsl:output>
+		transformer.transform(source, result);
+		writer.flush();
+		writer.close();
+	}
+	
 	
 }

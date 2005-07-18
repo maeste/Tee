@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:output method="xml" indent="yes" doctype-system="server" doctype-public='-//JBoss//DTD MBean Service 3.2//EN" "http://www.jboss.org/j2ee/dtd/jboss-service_3_2.dtd' />
+  <xsl:output method="xml" indent="yes" doctype-system="http://www.jboss.org/j2ee/dtd/jboss-service_3_2.dtd" doctype-public="-//JBoss//DTD MBean Service 3.2//EN" />
   
   <xsl:template match="Tee">
     <xsl:element name="server">

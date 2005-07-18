@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:output method="xml" indent="yes" doctype-system="ejb-jar" doctype-public='-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" "http://java.sun.com/dtd/ejb-jar_2_0.dtd' />
+  <xsl:output method="xml" indent="yes" doctype-system="http://java.sun.com/dtd/ejb-jar_2_0.dtd" doctype-public="-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" />
   
   <xsl:template match="Tee">
     <xsl:element name="ejb-jar">
@@ -48,7 +48,7 @@
         <xsl:element name="display-name">WSInterceptor Bean</xsl:element>
         <xsl:element name="ejb-name">WSInterceptorBean</xsl:element>
         <xsl:element name="local-home">it.javalinux.tee.interceptor.WSInterceptorHome</xsl:element>
-        <xsl:element name="local">it.javalinux.tee.interceptor.SessionBeanInterceptor</xsl:element>
+        <xsl:element name="local">it.javalinux.tee.interceptor.WSInterceptor</xsl:element>
         <xsl:element name="ejb-class">it.javalinux.tee.interceptor.WSInterceptorBean</xsl:element>
         <xsl:element name="session-type">Stateless</xsl:element>
         <xsl:element name="transaction-type">Container</xsl:element>

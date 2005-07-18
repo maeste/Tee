@@ -30,7 +30,7 @@ import org.jboss.logging.Logger;
  *           view-type="local"
  *           local-jndi-name="Tee.WSInterceptor"
  * @ejb.interface local-class="it.javalinux.tee.interceptor.WSInterceptor" 
- * @ejb.home local-class="it.javalinux.tee.interceptor.WSinterceptorHome"
+ * @ejb.home local-class="it.javalinux.tee.interceptor.WSInterceptorHome"
  * @ejb.transaction type="Required"
  * @jboss-net.web-service urn="WSInterceptorBean"
  * 
@@ -54,7 +54,7 @@ public class WSInterceptorBean implements Interceptor, SessionBean {
 	        Logger.getLogger(this.getClass()).debug("Looking up RMI adaptor...");
             rmiserver = (RMIAdaptor) ctx.lookup("jmx/invoker/RMIAdaptor");
             if( rmiserver == null ) Logger.getLogger(this.getClass()).debug( "RMIAdaptor is null");
-            ObjectName teeOName = new ObjectName("it.javalinux:service=Tee");
+            ObjectName teeOName = new ObjectName("it.javalinux:service=TeeLince");
             Object[] parArray = {event};
             String[] signArray = {"it.javalinux.tee.event.Event"};
             Logger.getLogger(this.getClass()).debug("Invoking service...");
