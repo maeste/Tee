@@ -21,13 +21,13 @@ public interface TeeMBean extends ServiceMBean{
 	public void process(Event event);
 	
 	/**
-	 * @return Returns the specificationURLString.
+	 * @return Returns the TeeName.
 	 */
-	public String getSpecificationURLString();
+	public String getTeeName();
 	/**
-	 * @param specificationURLString The specificationURLString to set.
+	 * @param teeName The TeeName to set.
 	 */
-	public void setSpecificationURLString(String specificationURLString);
+	public void setTeeName(String teeName);
 
 	
 	

@@ -5,7 +5,7 @@
 <server>
     <mbean code="it.javalinux.tee.mbean.Tee" 
            name="it.javalinux:service=Tee">
-        <attribute name="SpecificationURLString">resource:tee-specification.xml</attribute>
+        <attribute name="TeeName">TeeLince</attribute>
         <!--attribute name="SpecificationURLString">/home/oracle/jboss/server/default/tee-specification.xml</attribute-->
     </mbean>
     

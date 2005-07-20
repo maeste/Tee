@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.commons.digester.Digester;
 import org.jboss.logging.Logger;
 import org.jboss.system.ServiceMBeanSupport;
+import org.jboss.system.server.ServerConfigLocator;
 
 /**
  * @author oracle
@@ -41,7 +42,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
     private static final String SPEC_PCKG = "it.javalinux.tee.specification";
     private static final String XSD_PATH = "resource:jboss-tee.xsd";
     
-	private String specificationURLString;
+	private String teeName;
 	private Map eventSpecMap = new HashMap();
 	private UnknownEventSpec unknownEventSpec;
 	
@@ -90,8 +91,8 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	 * 
 	 */
 	private void readSpecification() {
-		//TODO!!!
-		//specificationURLString = "/home/oracle/jboss/server/ale/deploy/myDeploy/jboss-tee.xml";
+		String xmlPath = ServerConfigLocator.locate().getServerTempDeployDir().getAbsolutePath()+
+			"/"+teeName+"-dep.xml";
 		
 	    if (!eventSpecMap.isEmpty()) {
 	        Logger.getLogger(this.getClass()).debug("Clearing eventSpecMap!");
@@ -141,12 +142,12 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	        
             InputStream specificationInputStream = null;
             try {
-                URL url = new URL(specificationURLString);
+                URL url = new URL(xmlPath);
                 specificationInputStream = url.openStream();
             } catch (MalformedURLException mue) {
-                specificationInputStream = new BufferedInputStream(new FileInputStream(specificationURLString));
+                specificationInputStream = new BufferedInputStream(new FileInputStream(xmlPath));
             }
-            Logger.getLogger(this.getClass()).debug(new StringBuffer("Parsing file ").append(specificationURLString).toString());
+            Logger.getLogger(this.getClass()).debug(new StringBuffer("Parsing file ").append(xmlPath).toString());
             Tee o = (Tee)digester.parse(specificationInputStream);
             
             /** Prova da qui in avanti **/
@@ -159,7 +160,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
             
             specificationInputStream.close();
         } catch (Exception e) {
-            Logger.getLogger(this.getClass()).info("An error occurred while parsing specification file "+specificationURLString);
+            Logger.getLogger(this.getClass()).info("An error occurred while parsing specification file "+teeName);
             e.printStackTrace();
         }
         
@@ -240,18 +241,18 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	
 	
 	/**
-	 * @return Returns the specificationURLString.
+	 * @return Returns the TeeName.
 	 */
-	public String getSpecificationURLString() {
-		return specificationURLString;
+	public String getTeeName() {
+		return teeName;
 	}
 	
 	
 	/**
-	 * @param specificationURLString The specificationURLString to set.
+	 * @param teeName The TeeName to set.
 	 */
-	public void setSpecificationURLString(String specificationURLString) {
-		this.specificationURLString = specificationURLString;
+	public void setTeeName(String teeName) {
+		this.teeName = teeName;
 	}
 	
 }
