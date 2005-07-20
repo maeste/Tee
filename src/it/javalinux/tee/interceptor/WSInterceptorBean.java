@@ -34,6 +34,8 @@ import org.jboss.logging.Logger;
  * @ejb.transaction type="Required"
  * @jboss-net.web-service urn="WSInterceptorBean"
  * 
+ * TUTTA QUESTA ROBA SOPRA IN REALTA' NON VIENE USATA...
+ *  
  */
 public class WSInterceptorBean implements Interceptor, SessionBean {
 
@@ -46,6 +48,7 @@ public class WSInterceptorBean implements Interceptor, SessionBean {
     public void intercept(Event event) {
         RMIAdaptor rmiserver = null;
         try {
+            String teeName = (String) sessionContext.lookup("java:comp/env/teeName");
 			Properties prop = new Properties();
 	        prop.put( "java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory" );
 	        prop.put( "java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces" );
@@ -54,10 +57,10 @@ public class WSInterceptorBean implements Interceptor, SessionBean {
 	        Logger.getLogger(this.getClass()).debug("Looking up RMI adaptor...");
             rmiserver = (RMIAdaptor) ctx.lookup("jmx/invoker/RMIAdaptor");
             if( rmiserver == null ) Logger.getLogger(this.getClass()).debug( "RMIAdaptor is null");
-            ObjectName teeOName = new ObjectName("it.javalinux:service=TeeLince");
+            ObjectName teeOName = new ObjectName("it.javalinux:service="+teeName);
             Object[] parArray = {event};
             String[] signArray = {"it.javalinux.tee.event.Event"};
-            Logger.getLogger(this.getClass()).debug("Invoking service...");
+            Logger.getLogger(this.getClass()).debug("Invoking service on Tee: "+teeName);
             rmiserver.invoke(teeOName,"process",parArray,signArray);
 		} catch (Exception e) {
 			Logger.getLogger(this.getClass()).error("Error calling Tee service!");

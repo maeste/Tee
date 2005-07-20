@@ -3,6 +3,8 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="xml" indent="yes" doctype-system="http://java.sun.com/dtd/ejb-jar_2_0.dtd" doctype-public="-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" />
   
+  <xsl:variable name="teeName" select="Tee/Name"/>
+  
   <xsl:template match="Tee">
     <xsl:element name="ejb-jar">
       <xsl:element name="description">ejb-jar</xsl:element>
@@ -38,6 +40,11 @@
         <xsl:element name="ejb-class">it.javalinux.tee.interceptor.SessionBeanInterceptorBean</xsl:element>
         <xsl:element name="session-type">Stateless</xsl:element>
         <xsl:element name="transaction-type">Container</xsl:element>
+	<xsl:element name="env-entry">
+	  <xsl:element name="env-entry-name">teeName</xsl:element>
+	  <xsl:element name="env-entry-type">java.lang.String</xsl:element>
+	  <xsl:element name="env-entry-value"><xsl:value-of select="$teeName"/></xsl:element>
+	</xsl:element>
       </xsl:element>
     </xsl:for-each>
   </xsl:template>
@@ -52,6 +59,11 @@
         <xsl:element name="ejb-class">it.javalinux.tee.interceptor.WSInterceptorBean</xsl:element>
         <xsl:element name="session-type">Stateless</xsl:element>
         <xsl:element name="transaction-type">Container</xsl:element>
+	<xsl:element name="env-entry">
+	  <xsl:element name="env-entry-name">teeName</xsl:element>
+	  <xsl:element name="env-entry-type">java.lang.String</xsl:element>
+	  <xsl:element name="env-entry-value"><xsl:value-of select="$teeName"/></xsl:element>
+	</xsl:element>
       </xsl:element>
     </xsl:for-each>
   </xsl:template>

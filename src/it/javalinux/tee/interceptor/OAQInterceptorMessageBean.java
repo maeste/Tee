@@ -40,7 +40,7 @@ import org.jboss.logging.Logger;
 
 public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageListener, Interceptor {
     
-    private MessageDrivenContext ctx;
+    private MessageDrivenContext context;
     
     /**
      * Equeues a message from the Tee's queue, then calls the Tee's MBean passing it.
@@ -64,6 +64,7 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
 	public void intercept(Event event) {
 	    RMIAdaptor rmiserver = null;
         try {
+            String teeName = (String) context.lookup("java:comp/env/teeName");
             Properties prop = new Properties();
             prop.put( "java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory" );
             prop.put( "java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces" );
@@ -93,6 +94,6 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
     }
 
     public void setMessageDrivenContext(MessageDrivenContext arg0) throws EJBException {
-        this.ctx = arg0;
+        this.context = arg0;
 	}
 }

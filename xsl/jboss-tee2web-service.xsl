@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://xml.apache.org/axis/wsdd/" xmlns:tee="http://net.jboss.org/tee" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://xml.apache.org/axis/wsdd/" xmlns:tee="http://net.jboss.org/tee" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java" exclude-result-prefixes="xsl">
   <xsl:output method="xml" indent="yes" />
   
   <xsl:variable name="teeName" select="Tee/Name"/>
-  
   <xsl:template match="Tee">
     <xsl:apply-templates select="Interceptors/WSInterceptor"/>
   </xsl:template>
   
   <xsl:template match="WSInterceptor">
     <xsl:element name="deployment">
+	    <xsl:attribute name="tee:junk" namespace="http://net.jboss.org/tee">Required because of a Xalan BUG</xsl:attribute>
+	    <xsl:attribute name="java:junk" namespace="http://xml.apache.org/axis/wsdd/providers/java">Required because of a Xalan BUG</xsl:attribute>
       <xsl:attribute name="name"><xsl:value-of select="$teeName"/></xsl:attribute>
       <xsl:attribute name="targetNamespace">http://net.jboss.org/tee</xsl:attribute>
       <xsl:element name="service">
-        <xsl:attribute name="name">WSInterceptorBean</xsl:attribute>
+        <xsl:attribute name="name"><xsl:value-of select="$teeName"/><xsl:text>.WSInterceptorBean</xsl:text></xsl:attribute>
 	<xsl:attribute name="provider">Handler</xsl:attribute>
 	<xsl:element name="parameter">
 	  <xsl:attribute name="name">handlerClass</xsl:attribute>

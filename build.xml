@@ -6,6 +6,7 @@
 	<property name="prj.deploypath" value="/mnt/test/"/>
 	<property name="prj.tempdir" value="temp" />
 	<property name="prj.libs" value="/dati/jboss/lib" />
+	<property name="prj.libs3" value="/dati/jboss/server/all/lib" />
 	<property name="prj.libs2" value="/dati/CamelotLib" />
 	
 	<property name="xdoclet.path" value="/dati/tools/xdoclet-lib/lib/" />
@@ -22,6 +23,7 @@
 	<path id="project.class.path">
 		<pathelement path="${classpath}" />
 		<pathelement location="${prj.libs}/jboss-common.jar" />
+		<pathelement location="${prj.libs2}/jdom.jar" />
 		<pathelement location="${prj.libs}/jboss-jmx.jar" />
 		<pathelement location="${prj.libs}/jboss-system.jar" />				
 		<pathelement location="${prj.libs2}/commons-beanutils.jar" />
@@ -29,17 +31,21 @@
 		<pathelement location="${prj.libs2}/commons-beanutils-bean-collections.jar" />
 		<pathelement location="${prj.libs2}/commons-digester.jar" />
 		
-		<pathelement location="${prj.libs2}/jbossall-client.jar" />
+		<!--pathelement location="${prj.libs2}/jbossall-client.jar" /-->
+		<pathelement location="/dati/jboss/client/jbossall-client.jar" />
 		<pathelement location="${prj.libs2}/axis-ant.jar" />
 		<pathelement location="${prj.libs2}/axis.jar" />
 		<pathelement location="${prj.libs2}/wsdl4j.jar" />
 		<pathelement location="${prj.libs2}/saaj.jar" />
 		<pathelement location="${prj.libs2}/aqapi.jar" />
+		<!--pathelement location="${prj.libs2}/jboss-j2ee.jar" /-->
+		<pathelement location="${prj.libs3}/jboss-j2ee.jar" />
 	</path>
 	
 	<path id="xdoclet.class.path">
 		<pathelement path="${classpath}" />
-		<pathelement location="${prj.libs2}/jboss-j2ee.jar" />
+ 		<!--pathelement location="${prj.libs2}/jboss-j2ee.jar" /-->
+		<pathelement location="${prj.libs3}/jboss-j2ee.jar" />
 		<pathelement location="${prj.libs2}/jboss-common.jar" />
 		<pathelement location="${prj.libs2}/ra-xa-libs.jar" />
 		<pathelement location="${prj.libs2}/log4j.jar" />

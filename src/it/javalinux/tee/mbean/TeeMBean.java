@@ -20,8 +20,6 @@ public interface TeeMBean extends ServiceMBean{
     
 	public void process(Event event);
 	
-	public void readSpecification();
-	
 	/**
 	 * @return Returns the specificationURLString.
 	 */

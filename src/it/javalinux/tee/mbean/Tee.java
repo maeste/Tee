@@ -71,7 +71,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	protected void startService() throws Exception {
 		super.startService();
 		Logger.getLogger(this.getClass()).debug("startService");
-		//this.readSpecification();
+		this.readSpecification();
 	}
 	
 	
@@ -89,7 +89,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	 * Reads and parses the specification file mapping events to handlers and transports
 	 * 
 	 */
-	public void readSpecification() {
+	private void readSpecification() {
 		//TODO!!!
 		//specificationURLString = "/home/oracle/jboss/server/ale/deploy/myDeploy/jboss-tee.xml";
 		

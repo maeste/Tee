@@ -9,6 +9,9 @@
       <xsl:element name="mbean">
         <xsl:attribute name="code">it.javalinux.tee.mbean.Tee</xsl:attribute>
 	<xsl:attribute name="name"><xsl:text>it.javalinux:service=</xsl:text><xsl:value-of select="Name"/></xsl:attribute>
+	<xsl:element name="attribute">
+	  <xsl:attribute name="name">SpecificationURLString</xsl:attribute><xsl:value-of select="SpecificationFile"/>
+	</xsl:element>
       </xsl:element>
       <!-- OAQ section -->
       <xsl:apply-templates select="Interceptors/OAQInterceptor"/>
