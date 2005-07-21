@@ -40,6 +40,8 @@
 		<pathelement location="${prj.libs2}/aqapi.jar" />
 		<!--pathelement location="${prj.libs2}/jboss-j2ee.jar" /-->
 		<pathelement location="${prj.libs3}/jboss-j2ee.jar" />
+		<pathelement location="${prj.libs2}/jboss-aspect-library-jdk50.jar" />
+		<pathelement location="${prj.libs2}/jboss-aop-jdk50.jar" />
 	</path>
 	
 	<path id="xdoclet.class.path">
@@ -74,6 +76,7 @@
 		<mkdir dir="${java.classes}" />
 		<javac destdir="${java.classes}" debug="on" deprecation="off">
 			<src path="${java.src}" />
+			<exclude name="**/*Test.java" />
 			<src path="${prj.tempdir}/xdoclet/" />
 			<classpath refid="project.class.path" />
 		</javac>

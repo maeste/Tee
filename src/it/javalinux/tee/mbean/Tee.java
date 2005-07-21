@@ -27,15 +27,11 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.commons.digester.Digester;
 import org.jboss.aspects.asynch.Asynchronous;
-import org.jboss.jmx.adaptor.rmi.RMIAdaptor;
 import org.jboss.logging.Logger;
 import org.jboss.system.ServiceMBeanSupport;
 import org.jboss.system.server.ServerConfigLocator;

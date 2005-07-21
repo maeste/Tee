@@ -73,10 +73,10 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
             Logger.getLogger(this.getClass()).debug("Looking up RMI adaptor...");
 	        rmiserver = (RMIAdaptor) ctx.lookup("jmx/invoker/RMIAdaptor");
 	        if( rmiserver == null ) Logger.getLogger(this.getClass()).debug( "RMIAdaptor is null");
-            ObjectName teeOName = new ObjectName("it.javalinux:service=Tee");
+            ObjectName teeOName = new ObjectName("it.javalinux:service="+teeName);
 		    Object[] parArray = {event};
             String[] signArray = {"it.javalinux.tee.event.Event"};
-            Logger.getLogger(this.getClass()).debug("Invoking service...");
+            Logger.getLogger(this.getClass()).debug("Invoking service on Tee: "+teeName);
 		    rmiserver.invoke(teeOName,"process",parArray,signArray);
         } catch (Exception e) {
             Logger.getLogger(this.getClass()).error("Error calling Tee service!");

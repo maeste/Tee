@@ -73,7 +73,7 @@
       <xsl:element name="message-driven">
         <xsl:element name="display-name"><xsl:value-of select="EjbName"/></xsl:element>
         <xsl:element name="ejb-name"><xsl:value-of select="EjbName"/></xsl:element>
-        <xsl:element name="ejb-class">it.javalinux.tee.interceptor.WSInterceptorBean</xsl:element>
+        <xsl:element name="ejb-class">it.javalinux.tee.interceptor.JMSInterceptorMessageBean</xsl:element>
 	<xsl:choose>
 	  <xsl:when test="AcknowledgeMode">
 	    <xsl:element name="acknowledge-mode"><xsl:value-of select="AcknowledgeMode"/></xsl:element>
@@ -94,6 +94,11 @@
 	  </xsl:element>
 	</xsl:element>
 	<xsl:element name="transaction-type">Container</xsl:element>
+	<xsl:element name="env-entry">
+	  <xsl:element name="env-entry-name">teeName</xsl:element>
+	  <xsl:element name="env-entry-type">java.lang.String</xsl:element>
+	  <xsl:element name="env-entry-value"><xsl:value-of select="$teeName"/></xsl:element>
+	</xsl:element>
       </xsl:element>
     </xsl:for-each>
   </xsl:template>
@@ -103,7 +108,7 @@
       <xsl:element name="message-driven">
         <xsl:element name="display-name"><xsl:value-of select="EjbName"/></xsl:element>
         <xsl:element name="ejb-name"><xsl:value-of select="EjbName"/></xsl:element>
-        <xsl:element name="ejb-class">it.javalinux.tee.interceptor.WSInterceptorBean</xsl:element>
+        <xsl:element name="ejb-class">it.javalinux.tee.interceptor.OAQInterceptorMessageBean</xsl:element>
 	<xsl:choose>
 	  <xsl:when test="AcknowledgeMode">
 	    <xsl:element name="acknowledge-mode"><xsl:value-of select="AcknowledgeMode"/></xsl:element>
@@ -124,6 +129,11 @@
 	  </xsl:element>
 	</xsl:element>
 	<xsl:element name="transaction-type">Container</xsl:element>
+	<xsl:element name="env-entry">
+	  <xsl:element name="env-entry-name">teeName</xsl:element>
+	  <xsl:element name="env-entry-type">java.lang.String</xsl:element>
+	  <xsl:element name="env-entry-value"><xsl:value-of select="$teeName"/></xsl:element>
+	</xsl:element>
       </xsl:element>
     </xsl:for-each>
   </xsl:template>
