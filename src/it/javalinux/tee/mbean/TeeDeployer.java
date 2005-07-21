@@ -80,26 +80,26 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	 */
 	public void init(DeploymentInfo di) throws DeploymentException {
 		try {
-			if (di.watch == null) {
-				// resolve the watch
-				if (di.url.getProtocol().equals("file")) {
-					File file = new File(di.url.getFile());
-					
-					// If not directory we watch the package
-					if (!file.isDirectory()) {
-						if (di.url.getFile().endsWith(".tee")) {
-							di.watch = di.localCl.findResource("META-INF/jboss-tee.xml");
-						} else {
-							di.watch = di.url;
-						}
+			// resolve the watch
+			if (di.url.getProtocol().equals("file")) {
+				File file = new File(di.url.getFile());
+				
+				// If not directory we watch the package
+				if (!file.isDirectory()) {
+					if (di.url.getFile().endsWith(".tee")) {
+						di.watch = di.localCl.findResource("META-INF/jboss-tee.xml");
+						URL nestedURL = JarUtils.extractNestedJar(di.watch, this.tempDeployDir);
+						di.watch = nestedURL;
 					} else {
-					    //If directory we watch the xml files
-						di.watch = new URL(di.url, "META-INF/jboss-tee.xml");
+						di.watch = di.url;
 					}
 				} else {
-					// We watch the top only, no directory support
-					di.watch = di.url;
+				    //If directory we watch the xml files
+					di.watch = new URL(di.url, "META-INF/jboss-tee.xml");
 				}
+			} else {
+				// We watch the top only, no directory support
+				di.watch = di.url;
 			}
 			
 			//jboss-tee.xml parsing...
@@ -172,9 +172,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 				new DeploymentInfo(wsr.toURL(), di, getServer());
 			}
 			
-			//eventualmente qui si può decidere di scompattare/copiare i jar contenuti...
-			//se mettiamo assieme gli eventi (nel caso fare come nell'EARDeployer, con extractNestedJar)
-			//TODO!!! Da provare bene questa cosa che segue...
+			//deploy nested jars (containing events for example)
 			File parentDir = null;
 			HashMap extractedJars = new HashMap();
 			if (di.isDirectory) {
@@ -203,12 +201,6 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 					}
 				}
 			}
-			
-			
-			
-			//JarUtils.jar(new FileOutputStream(file2),file3);
-			
-			//this.addDeployableJar(di,new JarFile(file2));
 		} catch (Exception e) {
 			log.error("Failed to parse TEE document: ", e);
 			throw new DeploymentException(e);
@@ -239,7 +231,6 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 		try {
 			if (!di.isXML) {
 				Iterator it = ArchiveBrowser.getBrowser(di.url, new ClassFileFilter());
-				log.info("BB");
 //				AspectAnnotationLoader loader = new AspectAnnotationLoader(AspectManager.instance());
 //				loader.deployInputStreamIterator(it);
 //				
