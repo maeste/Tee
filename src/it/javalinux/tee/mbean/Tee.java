@@ -24,8 +24,18 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
+
+import javax.naming.InitialContext;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.apache.commons.digester.Digester;
+import org.jboss.aspects.asynch.Asynchronous;
+import org.jboss.jmx.adaptor.rmi.RMIAdaptor;
 import org.jboss.logging.Logger;
 import org.jboss.system.ServiceMBeanSupport;
 import org.jboss.system.server.ServerConfigLocator;
@@ -198,9 +208,29 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	
     /**
      * @param event
+     * 
      */
+	@Asynchronous
 	public void process(Event event) {
-	    try {
+		UserTransaction userTransaction = null;
+		try {
+			Properties prop = new Properties();
+			prop.put("java.naming.factory.initial",
+					"org.jnp.interfaces.NamingContextFactory");
+			prop.put("java.naming.factory.url.pkgs",
+					"org.jboss.naming:org.jnp.interfaces");
+			prop.put("java.naming.provider.url", "jnp://localhost:1099");
+			InitialContext ctx = new InitialContext(prop);
+			Logger.getLogger(this.getClass())
+					.debug("Looking up RMI adaptor...");
+			userTransaction = (UserTransaction) ctx.lookup("UserTransaction");
+			userTransaction.begin();
+		} catch (Exception e) {
+			Logger.getLogger("Transaction begin failed");
+		}
+		
+		try {
+			
 		    Logger.getLogger(this.getClass()).info("Processing event of class "+event.getClass().getName());
 			//get handler and/or transport right for this event 
 			// and invoke them passing event and log option
@@ -236,7 +266,25 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 			StringWriter sw = new StringWriter();
     		e.printStackTrace(new PrintWriter(sw));
     		Logger.getLogger(this.getClass()).error(sw.toString());
+			try {
+				userTransaction.setRollbackOnly();
+			} catch (IllegalStateException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SystemException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 	    }
+	
+			try {
+				userTransaction.commit();
+			} catch (Exception e) {
+				
+				// TODO Qui bisogna salvare da qualche parte l'evento.
+				e.printStackTrace();
+			} 
+		
 	}
 	
 	
