@@ -80,6 +80,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	 */
 	public void init(DeploymentInfo di) throws DeploymentException {
 		try {
+            URL myUrl = di.url;
 			// resolve the watch
 			if (di.url.getProtocol().equals("file")) {
 				File file = new File(di.url.getFile());
@@ -88,8 +89,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 				if (!file.isDirectory()) {
 					if (di.url.getFile().endsWith(".tee")) {
 						di.watch = di.localCl.findResource("META-INF/jboss-tee.xml");
-						URL nestedURL = JarUtils.extractNestedJar(di.watch, this.tempDeployDir);
-						di.watch = nestedURL;
+						myUrl = JarUtils.extractNestedJar(di.watch, this.tempDeployDir);
 					} else {
 						di.watch = di.url;
 					}
@@ -103,7 +103,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 			}
 			
 			//jboss-tee.xml parsing...
-			Document jbossTeeDocument = this.readDocument(new File(di.watch.getFile()));
+			Document jbossTeeDocument = this.readDocument(new File(myUrl.getFile()));
 //			Document jbossTeeDocument = this.readDocumentWithValidation(new File(di.watch.getFile()),"/jboss-tee.xsd");
 			
 			NodeList sessionBeanIntercNodeList = jbossTeeDocument.getElementsByTagName("SessionBeanInterceptor");

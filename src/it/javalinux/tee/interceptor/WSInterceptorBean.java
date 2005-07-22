@@ -6,19 +6,16 @@ package it.javalinux.tee.interceptor;
 
 import it.javalinux.tee.event.Event;
 import it.javalinux.tee.event.MapEvent;
+import it.javalinux.tee.misc.ServiceLocator;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
-import java.util.Properties;
 
 import javax.ejb.EJBException;
 import javax.ejb.SessionBean;
 import javax.ejb.SessionContext;
-import javax.management.ObjectName;
-import javax.naming.InitialContext;
 
-import org.jboss.jmx.adaptor.rmi.RMIAdaptor;
 import org.jboss.logging.Logger;
 
 /**
@@ -46,22 +43,12 @@ public class WSInterceptorBean implements Interceptor, SessionBean {
      * @see it.javalinux.tee.interceptor.Interceptor#intercept(it.javalinux.tee.event.Event)
      */
     public void intercept(Event event) {
-        RMIAdaptor rmiserver = null;
         try {
             String teeName = (String) sessionContext.lookup("java:comp/env/teeName");
-			Properties prop = new Properties();
-	        prop.put( "java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory" );
-	        prop.put( "java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces" );
-	        prop.put( "java.naming.provider.url", "jnp://localhost:1099");
-	        InitialContext ctx = new InitialContext(prop);
-	        Logger.getLogger(this.getClass()).debug("Looking up RMI adaptor...");
-            rmiserver = (RMIAdaptor) ctx.lookup("jmx/invoker/RMIAdaptor");
-            if( rmiserver == null ) Logger.getLogger(this.getClass()).debug( "RMIAdaptor is null");
-            ObjectName teeOName = new ObjectName("it.javalinux:service="+teeName);
+            String jndiName = "it.javalinux:service="+teeName;
             Object[] parArray = {event};
             String[] signArray = {"it.javalinux.tee.event.Event"};
-            Logger.getLogger(this.getClass()).debug("Invoking service on Tee: "+teeName);
-            rmiserver.invoke(teeOName,"process",parArray,signArray);
+            ServiceLocator.getInstance().callMBean(jndiName,"process",parArray, signArray);
 		} catch (Exception e) {
 			Logger.getLogger(this.getClass()).error("Error calling Tee service!");
 			StringWriter sw = new StringWriter();
@@ -78,7 +65,7 @@ public class WSInterceptorBean implements Interceptor, SessionBean {
 	 * @jboss-net.web-method returnQName="interceptMapEvent"
 	 */
     public void InterceptMapEvent(MapEvent mapEvent) {
-        Logger.getLogger(this.getClass()).info("interceptMapEvent called!");
+        Logger.getLogger(this.getClass()).debug("interceptMapEvent called!");
         this.intercept(mapEvent);
     }
     

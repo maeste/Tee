@@ -47,7 +47,20 @@ public class ServiceLocator {
         rmiserver = (RMIAdaptor) ctx.lookup("jmx/invoker/RMIAdaptor");
         if( rmiserver == null ) Logger.getLogger(ServiceLocator.class).debug( "RMIAdaptor is null");
         ObjectName oName = new ObjectName(jndiName);
-        Logger.getLogger(ServiceLocator.class).debug("Invoking method on: "+jndiName);
+        StringBuffer sb = new StringBuffer("Invoking method ");
+        sb.append(method);
+        sb.append("(");
+        for (int i=0; i<signature.length; i++) {
+            sb.append(signature[i]);
+            sb.append(" par");
+            sb.append(i);
+            if (i+1<signature.length) {
+                sb.append(", ");
+            }
+        }
+        sb.append(") on: ");
+        sb.append(jndiName);
+        Logger.getLogger(ServiceLocator.class).debug(sb.toString());
         rmiserver.invoke(oName,method,parameters,signature);
     }
     

@@ -5,18 +5,16 @@
 package it.javalinux.tee.interceptor;
 
 import it.javalinux.tee.event.Event;
+import it.javalinux.tee.misc.ServiceLocator;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Properties;
 
 import javax.ejb.EJBException;
 import javax.ejb.MessageDrivenBean;
 import javax.ejb.MessageDrivenContext;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.management.ObjectName;
-import javax.naming.InitialContext;
 
 import oracle.jms.AQjmsAdtMessage;
 
@@ -48,9 +46,9 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
      */
 	public void onMessage(Message arg0) {
 	    try {
-	        Logger.getLogger(this.getClass()).info("Intercettato evento!!");
+	        Logger.getLogger(this.getClass()).debug("Message received...");
 	        Event event = (Event)((AQjmsAdtMessage)arg0).getAdtPayload();
-	        Logger.getLogger(this.getClass()).info(event.getClass());
+	        Logger.getLogger(this.getClass()).debug(event.getClass());
 			this.intercept(event);
 	    } catch (Exception e) {
 	        Logger.getLogger(this.getClass()).error("Error while enqueueing!");
@@ -65,19 +63,10 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
 	    RMIAdaptor rmiserver = null;
         try {
             String teeName = (String) context.lookup("java:comp/env/teeName");
-            Properties prop = new Properties();
-            prop.put( "java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory" );
-            prop.put( "java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces" );
-            prop.put( "java.naming.provider.url", "jnp://localhost:1099");
-            InitialContext ctx = new InitialContext(prop);
-            Logger.getLogger(this.getClass()).debug("Looking up RMI adaptor...");
-	        rmiserver = (RMIAdaptor) ctx.lookup("jmx/invoker/RMIAdaptor");
-	        if( rmiserver == null ) Logger.getLogger(this.getClass()).debug( "RMIAdaptor is null");
-            ObjectName teeOName = new ObjectName("it.javalinux:service="+teeName);
-		    Object[] parArray = {event};
+            String jndiName = "it.javalinux:service="+teeName;
+            Object[] parArray = {event};
             String[] signArray = {"it.javalinux.tee.event.Event"};
-            Logger.getLogger(this.getClass()).debug("Invoking service on Tee: "+teeName);
-		    rmiserver.invoke(teeOName,"process",parArray,signArray);
+            ServiceLocator.getInstance().callMBean(jndiName,"process",parArray, signArray);
         } catch (Exception e) {
             Logger.getLogger(this.getClass()).error("Error calling Tee service!");
             StringWriter sw = new StringWriter();
