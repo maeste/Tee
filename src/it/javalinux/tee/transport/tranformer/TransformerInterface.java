@@ -12,6 +12,6 @@ import it.javalinux.tee.event.Event;
 
 public interface TransformerInterface {
 
-	Event transform(Event inputEvent) throws IllegalArgumentException;
+	public Event transform(Event inputEvent) throws IllegalArgumentException;
 
 }

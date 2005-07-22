@@ -64,7 +64,9 @@ public class TestEvent implements Event {
 	}
 	
 
-	
+	public String toString() {
+	    return "fooString: "+fooString+" fooInteger: "+fooInteger+" fooFloat: "+fooFloat+" fooint: "+fooInt;
+    }
 	
 
 

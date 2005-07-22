@@ -58,7 +58,7 @@
         <xsl:element name="local">it.javalinux.tee.interceptor.WSInterceptor</xsl:element>
         <xsl:element name="ejb-class">it.javalinux.tee.interceptor.WSInterceptorBean</xsl:element>
         <xsl:element name="session-type">Stateless</xsl:element>
-        <xsl:element name="transaction-type">Container</xsl:element>
+        <xsl:element name="transaction-type">Bean</xsl:element>
 	<xsl:element name="env-entry">
 	  <xsl:element name="env-entry-name">teeName</xsl:element>
 	  <xsl:element name="env-entry-type">java.lang.String</xsl:element>
@@ -128,7 +128,7 @@
 	    </xsl:if>
 	  </xsl:element>
 	</xsl:element>
-	<xsl:element name="transaction-type">Container</xsl:element>
+	<xsl:element name="transaction-type">Bean</xsl:element>
 	<xsl:element name="env-entry">
 	  <xsl:element name="env-entry-name">teeName</xsl:element>
 	  <xsl:element name="env-entry-type">java.lang.String</xsl:element>
@@ -164,7 +164,7 @@
 	  <xsl:element name="ejb-name">WSInterceptorBean</xsl:element>
 	  <xsl:element name="method-name">*</xsl:element>
 	</xsl:element>
-        <xsl:element name="trans-attribute">Required</xsl:element>
+        <xsl:element name="trans-attribute">NotSupported</xsl:element>
       </xsl:element>
     </xsl:for-each>
   </xsl:template>
@@ -188,7 +188,7 @@
 	  <xsl:element name="ejb-name"><xsl:value-of select="EjbName"/></xsl:element>
 	  <xsl:element name="method-name">*</xsl:element>
 	</xsl:element>
-	<xsl:element name="trans-attribute">Required</xsl:element>
+	<xsl:element name="trans-attribute">NotSupported</xsl:element>
       </xsl:element>
     </xsl:for-each>
   </xsl:template>

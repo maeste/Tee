@@ -19,6 +19,7 @@ public class EventSpec {
     private String eventClass;
     private List handlerSpecList = new ArrayList();
     private List transportSpecList = new ArrayList();
+    private TransformerSpec transformerSpec;
     
     /**
      * 
@@ -36,6 +37,19 @@ public class EventSpec {
     public void addTransport(TransportSpec transportSpec) {
         Logger.getLogger(this.getClass()).debug("Transport specification added");
         transportSpecList.add(transportSpec);
+    }
+    
+    /**
+     * 
+     * @param transformerSpec
+     */
+    public void setTransformer(TransformerSpec transformerSpec) {
+        Logger.getLogger(this.getClass()).debug("Transformer specification set");
+        this.transformerSpec = transformerSpec;
+    }
+    
+    public TransformerSpec getTransformer() {
+        return transformerSpec;
     }
     
     /**
@@ -78,6 +92,8 @@ public class EventSpec {
                 sb.append(", ");
             }
         }
+        sb.append("#, defined transformerSpec: #");
+        sb.append(transformerSpec);
         sb.append("#");
         return sb.toString();
     }

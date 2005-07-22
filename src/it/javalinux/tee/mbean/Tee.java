@@ -145,6 +145,17 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	        digester.addCallMethod("*/Log4jTransport/Prefix/TransportClassName", "setTransportClassNamePrefixType");
 	        digester.addCallMethod("*/Log4jTransport/Prefix/Custom", "setCustomPrefixType");
 	        digester.addCallMethod("*/Log4jTransport/Prefix/Custom", "setPrefix", 0);
+            //TeeTransport
+            digester.addObjectCreate("*/TeeTransport", SPEC_PCKG+".TeeTransportSpec");
+            digester.addSetNext("*/TeeTransport", "addTransport", SPEC_PCKG+".TransportSpec");
+            digester.addCallMethod("*/TeeTransport/TeeJndiName", "setTeeJndiName", 0);
+            //XML2BeanTransformer
+            digester.addObjectCreate("*/XML2BeanTransformer", SPEC_PCKG+".XML2BeanTransformerSpec");
+            digester.addSetNext("*/XML2BeanTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
+            //CustomTransformer
+            digester.addObjectCreate("*/CustomTransformer", SPEC_PCKG+".CustomTransformerSpec");
+            digester.addSetNext("*/CustomTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
+            digester.addCallMethod("*/CustomTransformer/CustomTranspormerClass", "setCustomTransformerClass", 0);
 	        
             InputStream specificationInputStream = null;
             try {
@@ -211,14 +222,10 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		UserTransaction userTransaction = null;
 		try {
 			Properties prop = new Properties();
-			prop.put("java.naming.factory.initial",
-					"org.jnp.interfaces.NamingContextFactory");
-			prop.put("java.naming.factory.url.pkgs",
-					"org.jboss.naming:org.jnp.interfaces");
+			prop.put("java.naming.factory.initial",  "org.jnp.interfaces.NamingContextFactory");
+			prop.put("java.naming.factory.url.pkgs", 	"org.jboss.naming:org.jnp.interfaces");
 			prop.put("java.naming.provider.url", "jnp://localhost:1099");
 			InitialContext ctx = new InitialContext(prop);
-			Logger.getLogger(this.getClass())
-					.debug("Looking up RMI adaptor...");
 			userTransaction = (UserTransaction) ctx.lookup("UserTransaction");
 			userTransaction.begin();
 		} catch (Exception e) {
@@ -234,6 +241,9 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		    Object obj = eventSpecMap.get(event.getClass().getName());
 	        if (obj!=null) {
 	            EventSpec eventSpec = (EventSpec)obj;
+                if (eventSpec.getTransformer()!=null) {
+                    event = helper.transformEvent(event, eventSpec.getTransformer());
+                }
 	            if (eventSpec.getHandlerSpecList().size()>0 || eventSpec.getTransportSpecList().size()>0) {
 	                for (Iterator it = eventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
 	                    helper.processWithHandler(event, (HandlerSpec)it.next());
@@ -246,6 +256,9 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	            }
 	        } else {
 	            //unknown event
+                if (unknownEventSpec.getTransformer()!=null) {
+                    event = helper.transformEvent(event, unknownEventSpec.getTransformer());
+                }
 	            if (unknownEventSpec.getHandlerSpecList().size()>0 || unknownEventSpec.getTransportSpecList().size()>0) {
 	                for (Iterator it = unknownEventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
 	                    helper.processWithHandler(event, (HandlerSpec)it.next());
