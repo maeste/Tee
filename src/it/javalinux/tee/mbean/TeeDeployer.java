@@ -7,9 +7,12 @@
 package it.javalinux.tee.mbean;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -170,6 +173,14 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 				new DeploymentInfo(wsr.toURL(), di, getServer());
 			}
 			
+            //enable aop
+            File aopXml = new File(tempDeploySubDirPrefix+"-aop.xml");
+            aopXml.createNewFile();
+            InputStream is = Tee.class.getResourceAsStream("/jboss-aop.xml"); //is there a better way? //TODO! Verificare percorso
+            this.writeFile(is, aopXml);
+            log.info("generated file: "+aopXml.getAbsolutePath());
+            new DeploymentInfo(aopXml.toURL(), di, getServer());
+            
 			//deploy nested jars (containing events for example)
 			File parentDir = null;
 			HashMap extractedJars = new HashMap();
@@ -415,5 +426,18 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 		writer.flush();
 		writer.close();
 	}
+    
 	
+    private void writeFile(InputStream in, File dst) throws IOException {
+        OutputStream out = new FileOutputStream(dst);
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
+    
 }
