@@ -46,8 +46,8 @@
       <xsl:element name="typeMapping">
         <xsl:attribute name="qname">tee:MapEvent</xsl:attribute>
 	<xsl:attribute name="type">java:it.javalinux.tee.event.MapEvent</xsl:attribute>
-	<xsl:attribute name="serializer">org.apache.axis.encoding.ser.BeanSerializerFactory</xsl:attribute>
-	<xsl:attribute name="deserializer">org.apache.axis.encoding.ser.BeanDeserializerFactory</xsl:attribute>
+	<xsl:attribute name="serializer">org.jboss.axis.encoding.ser.BeanSerializerFactory</xsl:attribute>
+	<xsl:attribute name="deserializer">org.jboss.axis.encoding.ser.BeanDeserializerFactory</xsl:attribute>
 	<xsl:attribute name="encodingStyle">http://schemas.xmlsoap.org/soap/encoding/</xsl:attribute>
       </xsl:element>
       
