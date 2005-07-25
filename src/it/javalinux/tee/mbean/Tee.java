@@ -19,7 +19,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.transaction.Status;
 import javax.transaction.SystemException;
+import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
 import org.jboss.aspects.Injected;
@@ -88,30 +90,18 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	//@Asynchronous
 	public void process(Event event) {
 
-//		UserTransaction userTransaction = null;
-//		try {
-//			Properties prop = new Properties();
-//			prop.put("java.naming.factory.initial",
-//					"org.jnp.interfaces.NamingContextFactory");
-//			prop.put("java.naming.factory.url.pkgs",
-//					"org.jboss.naming:org.jnp.interfaces");
-//			prop.put("java.naming.provider.url", "jnp://localhost:1099");
-//			InitialContext ctx = new InitialContext(prop);
-//			Logger.getLogger(this.getClass())
-//					.debug("Looking up RMI adaptor...");
-//			userTransaction = (UserTransaction) ctx.lookup("UserTransaction");
-//			userTransaction.begin();
-//		} catch (Exception e) {
-//			Logger.getLogger("Transaction begin failed");
-//		}
 
-		
+
+		Transaction motherTransaction = null;
 		
 		try {
-			//if (this.tm.getTransaction() == null) {
+			
+			if (tm.getStatus() == Status.STATUS_NO_TRANSACTION) {
+				Logger.getLogger(this.getClass()).debug("suspend old transaction");
+				motherTransaction = tm.suspend();
+			}
 			Logger.getLogger(this.getClass()).debug("Starting transaction");
 			tm.begin();
-			//}
 			
 		    Logger.getLogger(this.getClass()).info("Processing event of class "+event.getClass().getName());
 			//get handler and/or transport right for this event 
@@ -166,7 +156,19 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	    }
 	
 			try {
-				tm.commit();
+				if (tm.getStatus() == Status.STATUS_MARKED_ROLLBACK) {
+					Logger.getLogger(this.getClass()).debug("rollback transaction");
+					tm.rollback();
+				} else {
+					Logger.getLogger(this.getClass()).debug("commit transaction");
+					tm.commit();
+				}
+				
+				if (motherTransaction != null ) {
+					Logger.getLogger(this.getClass()).debug("resume old transaction");
+					tm.resume(motherTransaction);
+				}
+				
 			} catch (Exception e) {
 				
 				// TODO Qui bisogna salvare da qualche parte l'evento.
