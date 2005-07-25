@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aop PUBLIC
+   "-//JBoss//DTD JBOSS AOP 1.0//EN"
+   "http://www.jboss.org/aop/dtd/jboss-aop_1_0.dtd">
+
+<aop>
+<aspect class="org.jboss.aspects.asynch.AsynchAspect" scope="PER_INSTANCE">
+      <advisor-attribute name="Advisor"/>
+   </aspect>
+
+   <bind pointcut="execution(!static * *->@org.jboss.aspects.asynch.Asynchronous(..))">
+      <advice name="execute" aspect="org.jboss.aspects.asynch.AsynchAspect"/>
+   </bind>
+
+   <introduction expr="has(!static * *->@org.jboss.aspects.asynch.Asynchronous(..))">
+      <mixin>
+         <interfaces>org.jboss.aspects.asynch.AsynchProvider,org.jboss.aspects.asynch.FutureHolder</interfaces>
+         <class>org.jboss.aspects.asynch.AsynchMixin</class>
+      </mixin>
+   </introduction>
+<aspect class="org.jboss.aspects.tx.TransactionInjector"/>
+   <aspect class="org.jboss.aspects.tx.TransactionManagerInjector"/>
+
+   <bind pointcut="field(javax.transaction.Transaction *->@org.jboss.aspects.Current)">
+      <advice name="access" aspect="org.jboss.aspects.tx.TransactionInjector"/>
+   </bind>
+
+   <bind pointcut="field(javax.transaction.TransactionManager *->@org.jboss.aspects.Injected)">
+      <advice name="access" aspect="org.jboss.aspects.tx.TransactionManagerInjector"/>
+   </bind>
+
+   <bind pointcut="execution(*->new(..)) AND hasfield(javax.transaction.TransactionManager *->@org.jboss.aspects.Injected)">
+      <advice name="allocation" aspect="org.jboss.aspects.tx.TransactionManagerInjector"/>
+   </bind>
+
+</aop>

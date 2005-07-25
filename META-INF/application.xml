@@ -15,6 +15,9 @@
 	<module>
         <java>TeeDescriptor.sar</java>
     </module>
+	<module>
+        <java>Tee.aop</java>
+    </module>
 
 
 </application>

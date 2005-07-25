@@ -1,4 +1,4 @@
-<project name="Tee" default="deploy"> 
+<project name="Tee" default="deploySplit"> 
 	<!-- set global properties for this build -->
 	<property name="src" value="src" />
 
@@ -43,6 +43,7 @@
 		<pathelement location="${prj.libs2}/jboss-aspect-library-jdk50.jar" />
 		<pathelement location="${prj.libs2}/jboss-aop-jdk50.jar" />
 		<pathelement path="/dati/jboss-aop_1.3/lib-50/jboss-aspect-library-jdk50.jar"/>
+		<pathelement location="${prj.libs2}/junit.jar" />
 	</path>
 	
 	<path id="xdoclet.class.path">
@@ -99,15 +100,14 @@
 			<classpath refid="project.class.path" />
 		</javac>
 		<taskdef name="aopc" classname="org.jboss.aop.ant.AopC"
-			               classpathref="jboss.aop.classpath"/>
-		<aopc compilerclasspathref="all.classpath" verbose="true">
+			               classpathref="all.classpath"/>
+		<aopc compilerclasspathref="project.class.path" verbose="true" classpathref="all.classpath">
 			<classpath path="${java.classes}"/>
-			<classpath path="${project.class.path}"/>
-			<classpath path="${jboss.aop.classpath}"/>
+			<classpath path="${prj.libs2}/commons-digester.jar"/>
+			<classpath refid="jboss.aop.classpath"/>
 			<src path="${java.classes}"/>
-			<src path="${prj.tempdir}/xdoclet/" />
-			<include name="**/*.class"/>
-			<!--<aoppath path="jboss-aop.xml"/>-->
+			<include name="**/Tee.class"/>
+			<aoppath path="META-INF/jboss-aop.xml"/>
 			<aopclasspath path="/dati/jboss-aop_1.3/lib-50/jboss-aspect-library-jdk50.jar"/>
 		</aopc>
 	</target>
@@ -120,39 +120,7 @@
 	</target>
 
 	
-	<target name="dist" depends="cleanDist,compile">
-		<mkdir dir="${dist.temp}/jar" />
-		<jar jarfile="${dist.temp}/jar/${prj.appname}.jar">
-			<metainf dir="${prj.tempdir}/xdoclet/META-INF/" excludes="web-service.xml" />
-			<metainf dir="META-INF/" includes="jboss.xml"/>
-			<fileset dir="${java.classes}" />
-		</jar>
-		
-		<mkdir dir="${dist.temp}/sar" />
-		<jar jarfile="${dist.temp}/sar/${prj.appname}Descriptor.sar">
-			<metainf dir="META-INF/" includes="jboss-service.xml"/>
-			<!--metainf dir="META-INF/" /-->
-			<fileset file="tee-specification.xml"/>
-			<fileset file="tee-specification.xsd"/>
-		</jar>
-		
-		<mkdir dir="${dist.temp}/wsr" />
-		<jar jarfile="${dist.temp}/wsr/${prj.appname}.wsr">
-			<metainf dir="${prj.tempdir}/xdoclet/META-INF/" includes="web-service.xml"/>
-		</jar>
-		
-		<mkdir dir="${dist.temp}/ear" />
-		<jar jarfile="${dist.temp}/ear/700${prj.appname}.ear">
-			<fileset dir="${dist.temp}/jar" />
-			<fileset dir="${dist.temp}/sar" />
-			<fileset dir="${dist.temp}/wsr" />
-			<fileset dir=".">
-				<include name="META-INF/application.xml"/>
-				<include name="META-INF/jboss-app.xml"/>
-			</fileset>
-		</jar>
-	</target>
-	
+
 	
 	<target name="distSplit" depends="cleanDist,compile">
 		<mkdir dir="${dist.temp}/jar" />
@@ -167,6 +135,11 @@
 			<fileset dir="${java.classes}" />
 			<fileset dir="xsl" />
 			<fileset file="jboss-tee.xsd"/>
+		</jar>
+		
+		<mkdir dir="${dist.temp}/aop" />
+		<jar jarfile="${dist.temp}/aop/${prj.appname}.aop">
+			<metainf dir="META-INF/" includes="jboss-aop.xml"/>
 		</jar>
 				
 		<mkdir dir="${dist.temp}/sar" />
@@ -191,6 +164,7 @@
 				<include name="META-INF/jboss-app.xml"/>
 			</fileset>
 		</jar>
+		
 		
 	</target>
 		
@@ -221,10 +195,6 @@
 		<delete dir="${prj.tempdir}" />
 	</target>
 
-	
-	<target name="deploy" depends="dist">
-		<copy file="${dist.temp}/ear/700${prj.appname}.ear" todir="${prj.deploypath}" />
-	</target>
 
 	
 	<target name="deploySplit" depends="distSplit">
