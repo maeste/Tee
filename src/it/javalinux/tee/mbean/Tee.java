@@ -96,7 +96,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		
 		try {
 			
-			if (tm.getStatus() == Status.STATUS_NO_TRANSACTION) {
+			if (tm.getStatus() != Status.STATUS_NO_TRANSACTION) {
 				Logger.getLogger(this.getClass()).debug("suspend old transaction");
 				motherTransaction = tm.suspend();
 			}
