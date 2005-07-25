@@ -64,7 +64,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	public boolean accepts(DeploymentInfo di) {
 	    //To be accepted the deployment's root name must end in tee
 		String urlStr = di.url.getFile();
-		if( !urlStr.endsWith("tee") && !urlStr.endsWith("-tee/") && !urlStr.endsWith("-tee.xml") ) {
+		if( !urlStr.endsWith("tee") && !urlStr.endsWith("-tee/") && !urlStr.endsWith("-tee.xml") && !urlStr.endsWith(".tee/")) {
 			return false;
 		} else {
 			return true;
@@ -82,25 +82,23 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 		try {
             URL myUrl = di.url;
 			// resolve the watch
-			if (di.url.getProtocol().equals("file")) {
-				File file = new File(di.url.getFile());
-				
-				// If not directory we watch the package
-				if (!file.isDirectory()) {
-					if (di.url.getFile().endsWith(".tee")) {
-						di.watch = di.localCl.findResource("META-INF/jboss-tee.xml");
-						myUrl = JarUtils.extractNestedJar(di.watch, this.tempDeployDir);
-					} else {
-						di.watch = di.url;
-					}
-				} else {
-				    //If directory we watch the xml files
-					di.watch = new URL(di.url, "META-INF/jboss-tee.xml");
-				}
-			} else {
-				// We watch the top only, no directory support
-				di.watch = di.url;
-			}
+            if (di.url.getProtocol().equals("file")) {
+                File file = new File(di.url.getFile());
+                // If not directory we watch the package
+                if (!file.isDirectory()) {
+                    di.watch = di.url;
+                    if (di.url.getFile().endsWith(".tee")) {
+                        myUrl = JarUtils.extractNestedJar(di.localCl.findResource("META-INF/jboss-tee.xml"), this.tempDeployDir);
+                    }
+                } else {
+                    //If directory we watch the xml files
+                    di.watch = new URL(di.url, "META-INF/jboss-tee.xml");
+                    myUrl = di.watch;
+                }
+            } else {
+                // We watch the top only, no directory support
+                di.watch = di.url;
+            }
 			
 			//jboss-tee.xml parsing...
 			Document jbossTeeDocument = this.readDocument(new File(myUrl.getFile()));
@@ -285,7 +283,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 //				
 			}
 			
-			URL docURL = getDocUrl(di, di.localCl);
+			//URL docURL = getDocUrl(di, di.localCl);
 			//long start = System.currentTimeMillis();
 //			AspectXmlLoader.undeployXML(docURL);
 			/*
