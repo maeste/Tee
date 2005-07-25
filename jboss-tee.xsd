@@ -162,6 +162,7 @@
 				<xs:complexType>
 					<xs:choice>
 						<xs:element name="Xml2BeanTransormer"/>
+						<xs:element name="Map2BeanTransormer"/>
 						<xs:element name="CustomTransformer">
 							<xs:complexType>
 								<xs:sequence>

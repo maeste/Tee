@@ -14,7 +14,7 @@ import java.util.HashMap;
  */
 public class MapEvent implements Event, Serializable {
     
-    private HashMap map = new HashMap();
+    private HashMap<String,Object> map = new HashMap<String,Object>();
     
     public MapEvent() {
         
@@ -41,10 +41,10 @@ public class MapEvent implements Event, Serializable {
     }
     
     
-    public HashMap getMap() {
+    public HashMap<String,Object> getMap() {
         return map;
     }
-    public void setMap(HashMap map) {
+    public void setMap(HashMap<String,Object> map) {
         this.map = map;
     }
 }
