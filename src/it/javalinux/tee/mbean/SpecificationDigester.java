@@ -99,6 +99,9 @@ public class SpecificationDigester {
             //XML2BeanTransformer
             digester.addObjectCreate("*/XML2BeanTransformer", SPEC_PCKG+".XML2BeanTransformerSpec");
             digester.addSetNext("*/XML2BeanTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
+//			Map2BeanTransformer
+            digester.addObjectCreate("*/Map2BeanTransformer", SPEC_PCKG+".Map2BeanTransformerSpec");
+            digester.addSetNext("*/Map2BeanTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
             //CustomTransformer
             digester.addObjectCreate("*/CustomTransformer", SPEC_PCKG+".CustomTransformerSpec");
             digester.addSetNext("*/CustomTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
