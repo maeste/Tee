@@ -164,7 +164,7 @@
 	  <xsl:element name="ejb-name">WSInterceptorBean</xsl:element>
 	  <xsl:element name="method-name">*</xsl:element>
 	</xsl:element>
-        <xsl:element name="trans-attribute">NotSupported</xsl:element>
+        <xsl:element name="trans-attribute">Required</xsl:element>
       </xsl:element>
     </xsl:for-each>
   </xsl:template>
@@ -188,7 +188,7 @@
 	  <xsl:element name="ejb-name"><xsl:value-of select="EjbName"/></xsl:element>
 	  <xsl:element name="method-name">*</xsl:element>
 	</xsl:element>
-	<xsl:element name="trans-attribute">NotSupported</xsl:element>
+	<xsl:element name="trans-attribute">Required</xsl:element>
       </xsl:element>
     </xsl:for-each>
   </xsl:template>
