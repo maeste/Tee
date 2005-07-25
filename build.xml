@@ -42,6 +42,7 @@
 		<pathelement location="${prj.libs3}/jboss-j2ee.jar" />
 		<pathelement location="${prj.libs2}/jboss-aspect-library-jdk50.jar" />
 		<pathelement location="${prj.libs2}/jboss-aop-jdk50.jar" />
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/jboss-aspect-library-jdk50.jar"/>
 	</path>
 	
 	<path id="xdoclet.class.path">
@@ -60,8 +61,25 @@
 		<pathelement location="${prj.libs2}/axis.jar" />
 		<pathelement location="${prj.libs2}/jaxrpc.jar" />
 		<fileset dir="${xdoclet.path}"  includes="**/*.jar"/>
+		
 	</path>	
 
+	<path id="jboss.aop.classpath">
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/javassist.jar"/>
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/trove.jar"/>
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/concurrent.jar"/>
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/jboss-common.jar"/>
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/jboss-aop-jdk50.jar"/>
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/jboss-aspect-library-jdk50.jar"/>
+		
+	</path>
+	<path id="all.classpath">
+		<path refid="project.class.path"/>
+		<path refid="jboss.aop.classpath"/>
+			
+		</path>
+	
+	
 	
 	<target name="prepare">
 		<!-- Create the time stamp -->
@@ -80,6 +98,18 @@
 			<src path="${prj.tempdir}/xdoclet/" />
 			<classpath refid="project.class.path" />
 		</javac>
+		<taskdef name="aopc" classname="org.jboss.aop.ant.AopC"
+			               classpathref="jboss.aop.classpath"/>
+		<aopc compilerclasspathref="all.classpath" verbose="true">
+			<classpath path="${java.classes}"/>
+			<classpath path="${project.class.path}"/>
+			<classpath path="${jboss.aop.classpath}"/>
+			<src path="${java.classes}"/>
+			<src path="${prj.tempdir}/xdoclet/" />
+			<include name="**/*.class"/>
+			<!--<aoppath path="jboss-aop.xml"/>-->
+			<aopclasspath path="/dati/jboss-aop_1.3/lib-50/jboss-aspect-library-jdk50.jar"/>
+		</aopc>
 	</target>
 
 
