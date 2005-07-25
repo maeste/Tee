@@ -51,7 +51,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	private Map eventSpecMap = new HashMap();
 	private UnknownEventSpec unknownEventSpec;
 	
-	TransactionManager tm;
+	@Injected TransactionManager tm;
 	
 	/* (non-Javadoc)
 	 * @see org.jboss.system.ServiceMBeanSupport#createService()
