@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -27,18 +28,13 @@ public class SpecificationDigester {
 
     private static final String SPEC_PCKG = "it.javalinux.tee.specification";
     private static final String XSD_PATH = "resource:jboss-tee.xsd";
-	Map eventSpecMap;
-	UnknownEventSpec unknownEventSpec;
+	private Map eventSpecMap = new HashMap();
+	private UnknownEventSpec unknownEventSpec;
 	
 	/**
-	 * @param eventSpecMap
-	 * @param unknownEventSpec
 	 */
-	public SpecificationDigester(Map eventSpecMap, UnknownEventSpec unknownEventSpec) {
+	public SpecificationDigester() {
 		super();
-		// TODO Auto-generated constructor stub
-		this.eventSpecMap = eventSpecMap;
-		this.unknownEventSpec = unknownEventSpec;
 	}
 
 
@@ -165,4 +161,13 @@ public class SpecificationDigester {
         this.unknownEventSpec = unknownEventSpec;
     }
 	
+    
+    
+    
+    public Map getEventSpecMap() {
+        return eventSpecMap;
+    }
+    public UnknownEventSpec getUnknownEventSpec() {
+        return unknownEventSpec;
+    }
 }

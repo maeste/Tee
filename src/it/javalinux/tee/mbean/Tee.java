@@ -15,9 +15,7 @@ import it.javalinux.tee.specification.UnknownEventSpec;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.transaction.Status;
 import javax.transaction.SystemException;
@@ -39,8 +37,8 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 
     
 	private String teeName;
-	private Map eventSpecMap = new HashMap();
-	private UnknownEventSpec unknownEventSpec;
+    
+    private SpecificationDigester specDigester = null;
 	
 	@Injected TransactionManager tm;
 	
@@ -68,7 +66,8 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	protected void startService() throws Exception {
 		super.startService();
 		Logger.getLogger(this.getClass()).debug("startService");
-		(new SpecificationDigester(eventSpecMap,unknownEventSpec)).readSpecification(teeName);
+		specDigester = new SpecificationDigester();
+        specDigester.readSpecification(teeName);
 	}
 	
 	
@@ -107,7 +106,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 			//get handler and/or transport right for this event 
 			// and invoke them passing event and log option
 		    TeeHelper helper = new TeeHelper();
-		    Object obj = eventSpecMap.get(event.getClass().getName());
+		    Object obj = specDigester.getEventSpecMap().get(event.getClass().getName());
 	        if (obj!=null) {
 	            EventSpec eventSpec = (EventSpec)obj;
                 if (eventSpec.getTransformer()!=null) {
@@ -124,6 +123,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	                Logger.getLogger(this.getClass()).info("No handler or transport found for events of class "+event.getClass());
 	            }
 	        } else {
+                UnknownEventSpec unknownEventSpec = specDigester.getUnknownEventSpec();
 	            //unknown event
                 if (unknownEventSpec.getTransformer()!=null) {
                     event = helper.transformEvent(event, unknownEventSpec.getTransformer());
