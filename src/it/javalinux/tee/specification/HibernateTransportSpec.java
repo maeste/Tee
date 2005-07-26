@@ -8,9 +8,10 @@ package it.javalinux.tee.specification;
  * @author Alessio
  *
  */
-public class HibernateTransportSpec implements TransportSpec {
+public class HibernateTransportSpec implements TransportSpecInterface {
     
     private String hibernableEventClass;
+	private TransformerSpec transformerSpec;
     
     
     public String getHibernableEventClass() {
@@ -23,4 +24,13 @@ public class HibernateTransportSpec implements TransportSpec {
     public String toString() {
         return new StringBuffer("HibernateTransport => hibernableEventClass: %").append(hibernableEventClass).append("%").toString();
     }
+
+	public TransformerSpec getTransformer() {
+		return transformerSpec;
+	}
+	
+
+	public void setTransformer(TransformerSpec transformerSpec) {
+		this.transformerSpec = transformerSpec;
+	}
 }

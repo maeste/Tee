@@ -71,41 +71,81 @@ public class SpecificationDigester {
 	        digester.addCallMethod("*/Handler/HandlerClass", "setHandlerClass", 0);
 	        String[] logMeType={"java.lang.Boolean"};
 	        digester.addCallMethod("*/Handler/LogMe", "setLogMe", 0, logMeType);
+			//Transport
+			digester.addObjectCreate("*/Transport", SPEC_PCKG+".TransportSpec");
+			digester.addSetNext("*/Transport", "addTransport", SPEC_PCKG+".TransportSpec");
+			
 	        //HibernateTransport
-	        digester.addObjectCreate("*/HibernateTransport", SPEC_PCKG+".HibernateTransportSpec");
-	        digester.addSetNext("*/HibernateTransport", "addTransport", SPEC_PCKG+".TransportSpec");
-	        digester.addCallMethod("*/HibernateTransport/HibernableEventClass", "setHibernableEventClass", 0);
-	        //CustomTransport
-	        digester.addObjectCreate("*/CustomTransport", SPEC_PCKG+".CustomTransportSpec");
-	        digester.addSetNext("*/CustomTransport", "addTransport", SPEC_PCKG+".TransportSpec");
-	        digester.addCallMethod("*/CustomTransport/TransportClass", "setTransportClass", 0);
-	        digester.addObjectCreate("*/CustomTransport/Attribute", SPEC_PCKG+".AttributeSpec");
-	        digester.addSetNext("*/CustomTransport/Attribute", "addAttribute", SPEC_PCKG+".AttributeSpec");
-	        digester.addCallMethod("*/CustomTransport/Attribute/Name", "setName", 0);
-	        digester.addCallMethod("*/CustomTransport/Attribute/Type", "setType", 0);
-	        digester.addCallMethod("*/CustomTransport/Attribute/Value", "setValue", 0);
-	        //Log4JTransport
-	        digester.addObjectCreate("*/Log4jTransport", SPEC_PCKG+".Log4jTransportSpec");
-	        digester.addSetNext("*/Log4jTransport", "addTransport", SPEC_PCKG+".TransportSpec");
-	        digester.addCallMethod("*/Log4jTransport/DebugLevel", "setDebugLevel", 0);
-	        digester.addCallMethod("*/Log4jTransport/Prefix/EventClassName", "setEventClassNamePrefixType");
-	        digester.addCallMethod("*/Log4jTransport/Prefix/TransportClassName", "setTransportClassNamePrefixType");
-	        digester.addCallMethod("*/Log4jTransport/Prefix/Custom", "setCustomPrefixType");
-	        digester.addCallMethod("*/Log4jTransport/Prefix/Custom", "setPrefix", 0);
-            //TeeTransport
-            digester.addObjectCreate("*/TeeTransport", SPEC_PCKG+".TeeTransportSpec");
-            digester.addSetNext("*/TeeTransport", "addTransport", SPEC_PCKG+".TransportSpec");
-            digester.addCallMethod("*/TeeTransport/TeeJndiName", "setTeeJndiName", 0);
-            //XML2BeanTransformer
-            digester.addObjectCreate("*/XML2BeanTransformer", SPEC_PCKG+".XML2BeanTransformerSpec");
-            digester.addSetNext("*/XML2BeanTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
+	        digester.addObjectCreate("*/Transport/HibernateTransport", SPEC_PCKG+".HibernateTransportSpec");
+	        digester.addSetNext("*/Transport/HibernateTransport", "setInnerTransport", SPEC_PCKG+".TransportSpecInterface");
+	        digester.addCallMethod("*/Transport/HibernateTransport/HibernableEventClass", "setHibernableEventClass", 0);
+//		    //XML2BeanTransformer
+//            digester.addObjectCreate("*/HibernateTransport/XML2BeanTransformer", SPEC_PCKG+".XML2BeanTransformerSpec");
+//            digester.addCallMethod("*/HibernateTransport/XML2BeanTransformer", "setTransformer");
+////			Map2BeanTransformer
+//            digester.addObjectCreate("*/HibernateTransport/Map2BeanTransformer", SPEC_PCKG+".Map2BeanTransformerSpec");
+//            digester.addCallMethod("*/HibernateTransport/Map2BeanTransformer", "setTransformer");
+//            //CustomTransformer
+//            digester.addObjectCreate("*/HibernateTransport/CustomTransformer", SPEC_PCKG+".CustomTransformerSpec");
+//            digester.addCallMethod("*/HibernateTransport/CustomTransformer", "setTransformer");
+//            digester.addCallMethod("*/HibernateTransport/CustomTransformer/CustomTranspormerClass", "setCustomTransformerClass", 0);
+//	    
+			//CustomTransport
+	        digester.addObjectCreate("*/Transport/CustomTransport", SPEC_PCKG+".CustomTransportSpec");
+	        digester.addSetNext("*/Transport/CustomTransport", "setInnerTransport", SPEC_PCKG+".TransportSpecInterface");
+	        digester.addCallMethod("*/Transport/CustomTransport/TransportClass", "setTransportClass", 0);
+	        digester.addObjectCreate("*/Transport/CustomTransport/Attribute", SPEC_PCKG+".AttributeSpec");
+	        digester.addSetNext("*/Transport/CustomTransport/Attribute", "addAttribute", SPEC_PCKG+".AttributeSpec");
+	        digester.addCallMethod("*/Transport/CustomTransport/Attribute/Name", "setName", 0);
+	        digester.addCallMethod("*/Transport/ustomTransport/Attribute/Type", "setType", 0);
+	        digester.addCallMethod("*/Transport/CustomTransport/Attribute/Value", "setValue", 0);
+//		    //XML2BeanTransformer
+//            digester.addObjectCreate("*/CustomTransport/XML2BeanTransformer", SPEC_PCKG+".XML2BeanTransformerSpec");
+//            digester.addCallMethod("*/CustomTransport/XML2BeanTransformer", "setTransformer");
+////			Map2BeanTransformer
+//            digester.addObjectCreate("*/CustomTransport/Map2BeanTransformer", SPEC_PCKG+".Map2BeanTransformerSpec");
+//            digester.addCallMethod("*/CustomTransport/Map2BeanTransformer", "setTransformer");
+//            //CustomTransformer
+//            digester.addObjectCreate("*/CustomTransport/CustomTransformer", SPEC_PCKG+".CustomTransformerSpec");
+//            digester.addCallMethod("*/CustomTransport/CustomTransformer", "setTransformer");
+//            digester.addCallMethod("*/CustomTransport/CustomTransformer/CustomTranspormerClass", "setCustomTransformerClass", 0);
+//	    
+			//Log4JTransport
+	        digester.addObjectCreate("*/Transport/Log4jTransport", SPEC_PCKG+".Log4jTransportSpec");
+	        digester.addSetNext("*/Transport/Log4jTransport", "setInnerTransport", SPEC_PCKG+".TransportSpecInterface");
+	        digester.addCallMethod("*/Transport/Log4jTransport/DebugLevel", "setDebugLevel", 0);
+	        digester.addCallMethod("*/Transport/Log4jTransport/Prefix/EventClassName", "setEventClassNamePrefixType");
+	        digester.addCallMethod("*/Transport/Log4jTransport/Prefix/TransportClassName", "setTransportClassNamePrefixType");
+	        digester.addCallMethod("*/Transport/Log4jTransport/Prefix/Custom", "setCustomPrefixType");
+	        digester.addCallMethod("*/Transport/Log4jTransport/Prefix/Custom", "setPrefix", 0);
+//		    //XML2BeanTransformer
+//            digester.addObjectCreate("*/Log4jTransport/XML2BeanTransformer", SPEC_PCKG+".XML2BeanTransformerSpec");
+//            digester.addCallMethod("*/Log4jTransport/XML2BeanTransformer", "setTransformer");
+////			Map2BeanTransformer
+//            digester.addObjectCreate("*/Log4jTransport/Map2BeanTransformer", SPEC_PCKG+".Map2BeanTransformerSpec");
+//            digester.addCallMethod("*/Log4jTransport/Map2BeanTransformer", "setTransformer");
+//            //CustomTransformer
+//            digester.addObjectCreate("*/Log4jTransport/CustomTransformer", SPEC_PCKG+".CustomTransformerSpec");
+//            digester.addCallMethod("*/Log4jTransport/CustomTransformer", "setTransformer");
+//            digester.addCallMethod("*/Log4jTransport/CustomTransformer/CustomTranspormerClass", "setCustomTransformerClass", 0);
+//			
+			//TeeTransport
+			
+            digester.addObjectCreate("*/Transport/TeeTransport", SPEC_PCKG+".TeeTransportSpec");
+            digester.addSetNext("*/Transport/TeeTransport", "setInnerTransport", SPEC_PCKG+".TransportSpecInterface");
+            digester.addCallMethod("*/Transport/TeeTransport/TeeJndiName", "setTeeJndiName", 0);
+			
+			
+		    //XML2BeanTransformer
+            digester.addObjectCreate("*/Transport/XML2BeanTransformer", SPEC_PCKG+".XML2BeanTransformerSpec");
+            digester.addSetNext("*/Transport/XML2BeanTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
 //			Map2BeanTransformer
-            digester.addObjectCreate("*/Map2BeanTransformer", SPEC_PCKG+".Map2BeanTransformerSpec");
-            digester.addSetNext("*/Map2BeanTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
+            digester.addObjectCreate("*/Transport/Map2BeanTransformer", SPEC_PCKG+".Map2BeanTransformerSpec");
+            digester.addSetNext("*/Transport/Map2BeanTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
             //CustomTransformer
-            digester.addObjectCreate("*/CustomTransformer", SPEC_PCKG+".CustomTransformerSpec");
-            digester.addSetNext("*/CustomTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
-            digester.addCallMethod("*/CustomTransformer/CustomTranspormerClass", "setCustomTransformerClass", 0);
+            digester.addObjectCreate("*/Transport/CustomTransformer", SPEC_PCKG+".CustomTransformerSpec");
+            digester.addSetNext("*/Transport/CustomTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
+            digester.addCallMethod("*/Transport/CustomTransformer/CustomTranspormerClass", "setCustomTransformerClass", 0);
 	        
             InputStream specificationInputStream = null;
             try {

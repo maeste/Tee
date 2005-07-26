@@ -14,10 +14,11 @@ import org.jboss.logging.Logger;
  * @author Alessio
  *
  */
-public class CustomTransportSpec implements TransportSpec {
+public class CustomTransportSpec implements TransportSpecInterface {
     
     private String transportClass;
     private List attributeSpecList = new ArrayList();
+	private TransformerSpec transformerSpec;
     
     /**
      * 
@@ -58,5 +59,18 @@ public class CustomTransportSpec implements TransportSpec {
         sb.append("%");
         return sb.toString();
     }
+
+	public TransformerSpec getTransformer() {
+		return transformerSpec;
+	}
+	
+
+	public void setTransformer(TransformerSpec transformerSpec) {
+		this.transformerSpec = transformerSpec;
+	}
+
+
+	
+
     
 }

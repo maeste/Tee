@@ -158,21 +158,17 @@
 					</xs:complexType>
 				</xs:element>
 			</xs:choice>
-			<xs:element name="Transformation" minOccurs="0">
-				<xs:complexType>
-					<xs:choice>
-						<xs:element name="Xml2BeanTransormer"/>
-						<xs:element name="Map2BeanTransormer"/>
-						<xs:element name="CustomTransformer">
-							<xs:complexType>
-								<xs:sequence>
-									<xs:element name="CustomTransformerClass"/>
-								</xs:sequence>
-							</xs:complexType>
-						</xs:element>
-					</xs:choice>
-				</xs:complexType>
-			</xs:element>
+			<xs:choice>
+				<xs:element name="Xml2BeanTransormer"/>
+				<xs:element name="Map2BeanTransormer"/>
+				<xs:element name="CustomTransformer">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CustomTransformerClass"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="HandlerType">

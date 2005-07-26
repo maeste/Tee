@@ -19,7 +19,7 @@ public class EventSpec {
     private String eventClass;
     private List handlerSpecList = new ArrayList();
     private List transportSpecList = new ArrayList();
-    private TransformerSpec transformerSpec;
+    
     
     /**
      * 
@@ -39,18 +39,6 @@ public class EventSpec {
         transportSpecList.add(transportSpec);
     }
     
-    /**
-     * 
-     * @param transformerSpec
-     */
-    public void setTransformer(TransformerSpec transformerSpec) {
-        Logger.getLogger(this.getClass()).debug("Transformer specification set");
-        this.transformerSpec = transformerSpec;
-    }
-    
-    public TransformerSpec getTransformer() {
-        return transformerSpec;
-    }
     
     /**
      * 
@@ -84,17 +72,18 @@ public class EventSpec {
         sb.append("#, defined transportSpecs: #");
         for (Iterator it = transportSpecList.iterator(); it.hasNext(); ) {
             TransportSpec ts =(TransportSpec)it.next(); 
-            sb.append(ts.getClass().getName());
+            sb.append(ts.getInnerTransport().getClass().getName());
             sb.append("{");
-            sb.append(ts.toString());
+            sb.append(ts.getInnerTransport().toString());
+			 sb.append("--- with transformerSpec: ");
+		        sb.append(ts.getTransformer()!=null ? ts.getTransformer().toString(): "");
+		        sb.append("#");
             sb.append("}");
             if (it.hasNext()) {
                 sb.append(", ");
             }
         }
-        sb.append("#, defined transformerSpec: #");
-        sb.append(transformerSpec);
-        sb.append("#");
+       
         return sb.toString();
     }
     

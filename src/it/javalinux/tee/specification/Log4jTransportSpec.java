@@ -10,7 +10,7 @@ package it.javalinux.tee.specification;
  * @author Alessio
  *
  */
-public class Log4jTransportSpec implements TransportSpec {
+public class Log4jTransportSpec implements TransportSpecInterface {
     
     public static final String EVENT_CLASS_NAME_PREFIX = "EventClassName";
     public static final String TRANSPORT_CLASS_NAME_PREFIX = "TransportClassName";
@@ -19,6 +19,7 @@ public class Log4jTransportSpec implements TransportSpec {
     private String debugLevel;
     private String prefixType;
     private String prefix;
+	private TransformerSpec transformerSpec;
     
     public String getDebugLevel() {
         return debugLevel;
@@ -55,5 +56,13 @@ public class Log4jTransportSpec implements TransportSpec {
         return new StringBuffer("Log4JTransport => debugLevel: %").append(debugLevel).append("% prefixType: %").append(prefixType)
         	.append("% prefix: %").append(prefix).append("%").toString();
     }
-    
+
+	public TransformerSpec getTransformer() {
+		return transformerSpec;
+	}
+	
+
+	public void setTransformer(TransformerSpec transformerSpec) {
+		this.transformerSpec = transformerSpec;
+	}
 }

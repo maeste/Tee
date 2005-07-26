@@ -4,13 +4,16 @@
  */
 package it.javalinux.tee.specification;
 
+import org.jboss.logging.Logger;
+
 /**
  * @author Alessio
  *
  */
-public class TeeTransportSpec implements TransportSpec {
+public class TeeTransportSpec implements TransportSpecInterface {
     
     private String teeJndiName;
+	private TransformerSpec transformerSpec;
     
     public TeeTransportSpec() {
     }
@@ -26,4 +29,14 @@ public class TeeTransportSpec implements TransportSpec {
     public String toString() {
         return "TeeTransport";
     }
+
+	public TransformerSpec getTransformer() {
+		return transformerSpec;
+	}
+	
+
+	public void setTransformer(TransformerSpec transformerSpec) {
+		Logger.getLogger(this.getClass()).info("Transormer setted:"+ transformerSpec.toString());
+		this.transformerSpec = transformerSpec;
+	}
 }

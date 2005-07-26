@@ -109,9 +109,9 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		    Object obj = specDigester.getEventSpecMap().get(event.getClass().getName());
 	        if (obj!=null) {
 	            EventSpec eventSpec = (EventSpec)obj;
-                if (eventSpec.getTransformer()!=null) {
-                    event = helper.transformEvent(event, eventSpec.getTransformer());
-                }
+//                if (eventSpec.getTransformer()!=null) {
+//                    event = helper.transformEvent(event, eventSpec.getTransformer());
+//                }
 	            if (eventSpec.getHandlerSpecList().size()>0 || eventSpec.getTransportSpecList().size()>0) {
 	                for (Iterator it = eventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
 	                    helper.processWithHandler(event, (HandlerSpec)it.next());

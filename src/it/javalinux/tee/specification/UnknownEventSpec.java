@@ -64,9 +64,9 @@ public class UnknownEventSpec {
         sb.append("#, defined transportSpecs: #");
         for (Iterator it = transportSpecList.iterator(); it.hasNext(); ) {
             TransportSpec ts =(TransportSpec)it.next(); 
-            sb.append(ts.getClass().getName());
+            sb.append(ts.getInnerTransport().getClass().getName());
             sb.append("{");
-            sb.append(ts.toString());
+            sb.append(ts.getInnerTransport().toString());
             sb.append("}");
             if (it.hasNext()) {
                 sb.append(", ");
