@@ -11,7 +11,6 @@ package it.javalinux.tee.specification;
 public class HandlerSpec {
     
     private String handlerClass;
-    private boolean logMe;
     
     public HandlerSpec() {
     }
@@ -24,12 +23,6 @@ public class HandlerSpec {
         this.handlerClass = handlerClass;
     }
     
-    public boolean getLogMe() {
-        return logMe;
-    }
-    
-    public void setLogMe(boolean logMe) {
-        this.logMe = logMe;
-    }
+ 
     
 }

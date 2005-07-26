@@ -7,6 +7,7 @@
 package it.javalinux.tee.mbean;
 
 import it.javalinux.tee.event.Event;
+import it.javalinux.tee.misc.SpecificationDigester;
 import it.javalinux.tee.misc.TeeHelper;
 import it.javalinux.tee.specification.EventSpec;
 import it.javalinux.tee.specification.HandlerSpec;

@@ -5,6 +5,7 @@
 package it.javalinux.tee.misc;
 
 import it.javalinux.tee.event.Event;
+import it.javalinux.tee.exception.TransformationException;
 import it.javalinux.tee.handler.Handler;
 import it.javalinux.tee.specification.AttributeSpec;
 import it.javalinux.tee.specification.CustomTransformerSpec;
@@ -34,13 +35,14 @@ import org.jboss.logging.Logger;
 
 /**
  * @author Alessio
- *
+ * 
  */
 public class TeeHelper {
     
     /**
      * Obtains a new instance of the Handler specified by handlerSpec,
      * then passes it the event to be processed.
+     * 
      * 
      * @param event
      * @param handlerSpec
@@ -52,8 +54,7 @@ public class TeeHelper {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             Logger.getLogger(this.getClass()).info("classLoader: "+classLoader);
             Handler handler = (Handler)(classLoader.loadClass(handlerSpec.getHandlerClass()).newInstance());
-            handler.logMyCall();
-            handler.process(event, handlerSpec.getLogMe());
+            handler.process(event);
         } catch (Exception e) {
             Logger.getLogger(this.getClass()).error("An error occurred during event processing by handler "+
                     handlerSpec.getHandlerClass());
@@ -70,58 +71,53 @@ public class TeeHelper {
      * @param event
      * @param transportSpec
      */
-    public void processWithTransport(Event event, TransportSpec transportSpec) {
-        try {
-			Logger.getLogger(this.getClass()).info("Transport = " + transportSpec);
-			Logger.getLogger(this.getClass()).info("Transformer = " + transportSpec.getTransformer());
-			Logger.getLogger(this.getClass()).info("Transformer = " + transportSpec.getTransformer().getClass().getCanonicalName() );
-			if (transportSpec.getTransformer()!=null) {
-                event = (new TeeHelper()).transformEvent(event, transportSpec.getTransformer());
-          }
-			TransportSpecInterface specializedTransport = transportSpec.getInnerTransport();
-            if (specializedTransport instanceof Log4jTransportSpec) {
-                Logger.getLogger(this.getClass()).debug("Passing event to a Log4jTransport");
-                Log4jTransportSpec spec = (Log4jTransportSpec)specializedTransport;
-                Log4jTransport transport = new Log4jTransport();
-                transport.setDebugLevel(spec.getDebugLevel());
-                if (Log4jTransportSpec.EVENT_CLASS_NAME_PREFIX.equalsIgnoreCase(spec.getPrefixType())) {
-                    transport.setPrefix(event.getClass().getName());
-                } else if (Log4jTransportSpec.TRANSPORT_CLASS_NAME_PREFIX.equalsIgnoreCase(spec.getPrefixType())) {
-                    transport.setPrefix(transport.getClass().getName());
-                } else {
-                    transport.setPrefix(spec.getPrefix());
-                }
-                transport.process(event);
-            } else if (specializedTransport instanceof HibernateTransportSpec) {
-                Logger.getLogger(this.getClass()).debug("Passing event to an HibernateTransport");
-                HibernateTransportSpec spec = (HibernateTransportSpec)specializedTransport;
-                HibernateTransport transport = new HibernateTransport();
-                transport.setHibernableEventClass(spec.getHibernableEventClass());
-                transport.process(event);
-            } else if (specializedTransport instanceof CustomTransportSpec) {
-                CustomTransportSpec spec = (CustomTransportSpec)specializedTransport;
-                Logger.getLogger(this.getClass()).debug(new StringBuffer("Passing event to a CustomTransport: class ")
-                        .append(spec.getTransportClass()).toString());
-                Transport transport = (Transport)(Class.forName(spec.getTransportClass()).newInstance());
-                for (Iterator it = spec.getAttributeSpecList().iterator(); it.hasNext(); ) {
-                    AttributeSpec attributeSpec = (AttributeSpec)it.next();
-                    BeanUtils.copyProperty(transport, attributeSpec.getName(), attributeSpec.getValue());
-                }
-                transport.process(event);
-            } else if (specializedTransport instanceof TeeTransportSpec) {
-                TeeTransportSpec spec = (TeeTransportSpec)specializedTransport;
-                Logger.getLogger(this.getClass()).debug(new StringBuffer("Passing event to a TeeTransport: jndiName ")
-                        .append(spec.getTeeJndiName()).toString());
-                Object[] parArray = {event};
-                String[] signArray = {"it.javalinux.tee.event.Event"};
-                ServiceLocator.getInstance().callMBean("it.javalinux:service="+spec.getTeeJndiName(),"process",parArray, signArray);
+    public void processWithTransport(Event event, TransportSpec transportSpec) throws Exception {
+  
+		Logger.getLogger(this.getClass()).info("Transport = " + transportSpec);
+		Logger.getLogger(this.getClass()).info("Transformer = " + transportSpec.getTransformer());
+		Logger.getLogger(this.getClass()).info("Transformer = " + transportSpec.getTransformer().getClass().getCanonicalName() );
+		if (transportSpec.getTransformer()!=null) {
+            event = (new TeeHelper()).transformEvent(event, transportSpec.getTransformer());
+      }
+		TransportSpecInterface specializedTransport = transportSpec.getInnerTransport();
+        if (specializedTransport instanceof Log4jTransportSpec) {
+            Logger.getLogger(this.getClass()).debug("Passing event to a Log4jTransport");
+            Log4jTransportSpec spec = (Log4jTransportSpec)specializedTransport;
+            Log4jTransport transport = new Log4jTransport();
+            transport.setDebugLevel(spec.getDebugLevel());
+            if (Log4jTransportSpec.EVENT_CLASS_NAME_PREFIX.equalsIgnoreCase(spec.getPrefixType())) {
+                transport.setPrefix(event.getClass().getName());
+            } else if (Log4jTransportSpec.TRANSPORT_CLASS_NAME_PREFIX.equalsIgnoreCase(spec.getPrefixType())) {
+                transport.setPrefix(transport.getClass().getName());
+            } else {
+                transport.setPrefix(spec.getPrefix());
             }
-        } catch (Exception e) {
-            Logger.getLogger(this.getClass()).error("An error occurred during event processing by transport " + transportSpec.getClass());
-            StringWriter sw = new StringWriter();
-    		e.printStackTrace(new PrintWriter(sw));
-    		Logger.getLogger(this.getClass()).error(sw.toString());
+            transport.process(event);
+        } else if (specializedTransport instanceof HibernateTransportSpec) {
+            Logger.getLogger(this.getClass()).debug("Passing event to an HibernateTransport");
+            HibernateTransportSpec spec = (HibernateTransportSpec)specializedTransport;
+            HibernateTransport transport = new HibernateTransport();
+            transport.setHibernableEventClass(spec.getHibernableEventClass());
+            transport.process(event);
+        } else if (specializedTransport instanceof CustomTransportSpec) {
+            CustomTransportSpec spec = (CustomTransportSpec)specializedTransport;
+            Logger.getLogger(this.getClass()).debug(new StringBuffer("Passing event to a CustomTransport: class ")
+                    .append(spec.getTransportClass()).toString());
+            Transport transport = (Transport)(Class.forName(spec.getTransportClass()).newInstance());
+            for (Iterator it = spec.getAttributeSpecList().iterator(); it.hasNext(); ) {
+                AttributeSpec attributeSpec = (AttributeSpec)it.next();
+                BeanUtils.copyProperty(transport, attributeSpec.getName(), attributeSpec.getValue());
+            }
+            transport.process(event);
+        } else if (specializedTransport instanceof TeeTransportSpec) {
+            TeeTransportSpec spec = (TeeTransportSpec)specializedTransport;
+            Logger.getLogger(this.getClass()).debug(new StringBuffer("Passing event to a TeeTransport: jndiName ")
+                    .append(spec.getTeeJndiName()).toString());
+            Object[] parArray = {event};
+            String[] signArray = {"it.javalinux.tee.event.Event"};
+            ServiceLocator.getInstance().callMBean("it.javalinux:service="+spec.getTeeJndiName(),"process",parArray, signArray);
         }
+        
     }
     
     
@@ -133,9 +129,10 @@ public class TeeHelper {
      */
     public Event transformEvent(Event event, TransformerSpec transformerSpec) throws Exception {
         Event result = null;
+		TransformerInterface transformer;
         if (transformerSpec instanceof XML2BeanTransformerSpec) {
             Logger.getLogger(this.getClass()).debug("Passing event to a XML2BeanTransformer");
-            XML2BeanTransformer transformer = new XML2BeanTransformer();
+            transformer = new XML2BeanTransformer();
             result = transformer.transform(event);
         } else if (transformerSpec instanceof CustomTransformerSpec) {
             Logger.getLogger(this.getClass()).debug("Passing event to a CustomTransformer");
@@ -143,17 +140,19 @@ public class TeeHelper {
             
             Logger.getLogger(this.getClass()).debug(new StringBuffer("Passing event to a CustomTransformer: class ")
                     .append(spec.getCustomTransformerClass()).toString());
-            TransformerInterface transformer = (TransformerInterface)(Class.forName(spec.getCustomTransformerClass()).newInstance());
+            transformer = (TransformerInterface)(Class.forName(spec.getCustomTransformerClass()).newInstance());
             result = transformer.transform(event);
 		} else if (transformerSpec instanceof Map2BeanTransformerSpec) {
 			Logger.getLogger(this.getClass()).debug("Passing event to a XML2BeanTransformer");
-            Map2BeanTransformer transformer = new Map2BeanTransformer();
+            transformer = new Map2BeanTransformer();
             result = transformer.transform(event);
         } else {
             throw new IllegalArgumentException("unknown transformerSpec: "+transformerSpec);
         }
         if (result!=null) {
             Logger.getLogger(this.getClass()).info("Event transformed into a "+result.getClass()+" event.");
+        } else {
+			throw new TransformationException("Transformer" + transformer.getClass().getCanonicalName() + "return an ivalid (null) Event");
         }
         return result;
     }

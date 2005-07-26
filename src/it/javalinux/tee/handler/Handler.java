@@ -12,8 +12,6 @@ import it.javalinux.tee.event.Event;
  */
 public interface Handler {
     
-    public void process(Event event, boolean logMe);
-    
-    public void logMyCall();
+    public void process(Event event) throws Exception;
     
 }
