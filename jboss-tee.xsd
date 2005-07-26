@@ -159,8 +159,8 @@
 				</xs:element>
 			</xs:choice>
 			<xs:choice minOccurs="0" maxOccurs="1">
-				<xs:element name="Xml2BeanTransormer"/>
-				<xs:element name="Map2BeanTransormer"/>
+				<xs:element name="Xml2BeanTransformer"/>
+				<xs:element name="Map2BeanTransformer"/>
 				<xs:element name="CustomTransformer">
 					<xs:complexType>
 						<xs:sequence>
