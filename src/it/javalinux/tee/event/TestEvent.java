@@ -6,7 +6,6 @@
  */
 package it.javalinux.tee.event;
 
-import java.util.Date;
 
 public class TestEvent implements Event {
 	private String fooString;
@@ -14,16 +13,6 @@ public class TestEvent implements Event {
 	private int fooInt;
 	private Float fooFloat;
 	
-	public Date getInterceptTime() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getInterceptorName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public Float getFooFloat() {
 		return fooFloat;
 	}

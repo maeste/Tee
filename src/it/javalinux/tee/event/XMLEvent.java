@@ -11,16 +11,6 @@ import java.util.Date;
 public class XMLEvent implements Event {
 	private String xmlString;
 
-	public Date getInterceptTime() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getInterceptorName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public String getXmlString() {
 		return xmlString;
 	}

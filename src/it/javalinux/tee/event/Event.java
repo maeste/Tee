@@ -11,7 +11,5 @@ import java.util.Date;
  *
  */
 public interface Event {
-	public Date getInterceptTime();
-	public String getInterceptorName();
 
 }

@@ -5,7 +5,6 @@
 package it.javalinux.tee.event;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -20,21 +19,6 @@ public class MapEvent implements Event, Serializable {
         
     }
 
-    /* (non-Javadoc)
-     * @see it.javalinux.tee.event.Event#getInterceptTime()
-     */
-    public Date getInterceptTime() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see it.javalinux.tee.event.Event#getInterceptorName()
-     */
-    public String getInterceptorName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
     
     public String toString() {
         return "I'm a MapEvent :-)";
