@@ -84,7 +84,7 @@ public class SpecificationDigester {
 	        digester.addObjectCreate("*/Transport/CustomTransport/Attribute", SPEC_PCKG+".AttributeSpec");
 	        digester.addSetNext("*/Transport/CustomTransport/Attribute", "addAttribute", SPEC_PCKG+".AttributeSpec");
 	        digester.addCallMethod("*/Transport/CustomTransport/Attribute/Name", "setName", 0);
-	        digester.addCallMethod("*/Transport/ustomTransport/Attribute/Type", "setType", 0);
+	        digester.addCallMethod("*/Transport/CustomTransport/Attribute/Type", "setType", 0);
 	        digester.addCallMethod("*/Transport/CustomTransport/Attribute/Value", "setValue", 0);
 
 			//Log4JTransport
@@ -111,7 +111,7 @@ public class SpecificationDigester {
             //CustomTransformer
             digester.addObjectCreate("*/Transport/CustomTransformer", SPEC_PCKG+".CustomTransformerSpec");
             digester.addSetNext("*/Transport/CustomTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
-            digester.addCallMethod("*/Transport/CustomTransformer/CustomTranspormerClass", "setCustomTransformerClass", 0);
+            digester.addCallMethod("*/Transport/CustomTransformer/CustomTransformerClass", "setCustomTransformerClass", 0);
 	        
             InputStream specificationInputStream = null;
             try {
