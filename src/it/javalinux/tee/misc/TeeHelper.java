@@ -74,11 +74,12 @@ public class TeeHelper {
     public void processWithTransport(Event event, TransportSpec transportSpec) throws Exception {
   
 		Logger.getLogger(this.getClass()).info("Transport = " + transportSpec);
-		Logger.getLogger(this.getClass()).info("Transformer = " + transportSpec.getTransformer());
-		Logger.getLogger(this.getClass()).info("Transformer = " + transportSpec.getTransformer().getClass().getCanonicalName() );
+		if (transportSpec.getTransformer()!=null) {
+		    Logger.getLogger(this.getClass()).info("Transformer = " + transportSpec.getTransformer().getClass().getCanonicalName() );
+        }
 		if (transportSpec.getTransformer()!=null) {
             event = (new TeeHelper()).transformEvent(event, transportSpec.getTransformer());
-      }
+		}
 		TransportSpecInterface specializedTransport = transportSpec.getInnerTransport();
         if (specializedTransport instanceof Log4jTransportSpec) {
             Logger.getLogger(this.getClass()).debug("Passing event to a Log4jTransport");
@@ -143,7 +144,7 @@ public class TeeHelper {
             transformer = (TransformerInterface)(Class.forName(spec.getCustomTransformerClass()).newInstance());
             result = transformer.transform(event);
 		} else if (transformerSpec instanceof Map2BeanTransformerSpec) {
-			Logger.getLogger(this.getClass()).debug("Passing event to a XML2BeanTransformer");
+			Logger.getLogger(this.getClass()).debug("Passing event to a Map2BeanTransformer");
             transformer = new Map2BeanTransformer();
             result = transformer.transform(event);
         } else {

@@ -148,33 +148,29 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 			try {
 				tm.setRollbackOnly();
 			} catch (IllegalStateException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (SystemException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 	    }
-	
-			try {
-				if (tm.getStatus() == Status.STATUS_MARKED_ROLLBACK) {
-					Logger.getLogger(this.getClass()).debug("rollback transaction");
-					tm.rollback();
-				} else {
-					Logger.getLogger(this.getClass()).debug("commit transaction");
-					tm.commit();
-				}
-				
-				if (motherTransaction != null ) {
-					Logger.getLogger(this.getClass()).debug("resume old transaction");
-					tm.resume(motherTransaction);
-				}
-				
-			} catch (Exception e) {
-				
-				// TODO Qui bisogna salvare da qualche parte l'evento.
-				e.printStackTrace();
-			} 
+        
+        try {
+    		if (tm.getStatus() == Status.STATUS_MARKED_ROLLBACK) {
+    			Logger.getLogger(this.getClass()).debug("rollback transaction");
+    			tm.rollback();
+    		} else {
+    			Logger.getLogger(this.getClass()).debug("commit transaction");
+    			tm.commit();
+    		}
+    		
+    		if (motherTransaction != null ) {
+    			Logger.getLogger(this.getClass()).debug("resume old transaction");
+    			tm.resume(motherTransaction);
+    		}
+    	} catch (Exception e) {
+    		// TODO Qui bisogna salvare da qualche parte l'evento.
+    		e.printStackTrace();
+    	} 
 		
 	}
 	
