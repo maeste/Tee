@@ -12,7 +12,6 @@ import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.jboss.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -53,9 +52,9 @@ public class XML2BeanTransformer implements TransformerInterface {
 				continue;
 			}
 			try {
-                Logger.getLogger(this.getClass()).info(nodes.item(i).getNodeName());
-                Logger.getLogger(this.getClass()).info(nodes.item(i).getFirstChild().getNodeValue());
-                BeanUtils.copyProperty(bean,nodes.item(i).getNodeName(), nodes.item(i).getFirstChild().getNodeValue());
+                if (nodes.item(i).getFirstChild()!=null) {
+                    BeanUtils.copyProperty(bean,nodes.item(i).getNodeName(), nodes.item(i).getFirstChild().getNodeValue());
+                }
 			} catch (Exception e) {
                 e.printStackTrace();
 				throw new IllegalArgumentException("Check your xml.I Can't set this property:" + nodes.item(i).getNodeName());
