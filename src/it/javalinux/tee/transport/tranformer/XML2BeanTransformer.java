@@ -8,10 +8,13 @@ import it.javalinux.tee.event.Event;
 import it.javalinux.tee.event.XMLEvent;
 
 import java.io.StringReader;
+import java.sql.Timestamp;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.SqlTimestampConverter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -47,12 +50,15 @@ public class XML2BeanTransformer implements TransformerInterface {
 			throw new IllegalArgumentException("Impossible to instanciate EventName bean:" + eventName);
 		}
 		NodeList nodes = element.getChildNodes();
+		ConvertUtils.register(new SqlTimestampConverter(), Timestamp.class);
 		for (int i=0; i< nodes.getLength(); i++) {
 			if (nodes.item(i).getNodeName().equalsIgnoreCase("EventName")) {
 				continue;
 			}
 			try {
                 if (nodes.item(i).getFirstChild()!=null) {
+//					Logger.getLogger(this.getClass()).info("campo: "+nodes.item(i).getNodeName());
+//					Logger.getLogger(this.getClass()).info("valore: "+nodes.item(i).getFirstChild().getNodeValue());
                     BeanUtils.copyProperty(bean,nodes.item(i).getNodeName(), nodes.item(i).getFirstChild().getNodeValue());
                 }
 			} catch (Exception e) {
