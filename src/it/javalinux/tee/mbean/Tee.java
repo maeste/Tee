@@ -7,6 +7,7 @@
 package it.javalinux.tee.mbean;
 
 import it.javalinux.tee.event.Event;
+import it.javalinux.tee.event.NullEvent;
 import it.javalinux.tee.misc.SpecificationDigester;
 import it.javalinux.tee.misc.TeeHelper;
 import it.javalinux.tee.specification.EventSpec;
@@ -89,13 +90,8 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
      */
 	//@Asynchronous
 	public void process(Event event) {
-
-
-
 		Transaction motherTransaction = null;
-		
 		try {
-			
 			if (tm.getStatus() != Status.STATUS_NO_TRANSACTION) {
 				Logger.getLogger(this.getClass()).debug("suspend old transaction");
 				motherTransaction = tm.suspend();
@@ -107,39 +103,37 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 			//get handler and/or transport right for this event 
 			// and invoke them passing event and log option
 		    TeeHelper helper = new TeeHelper();
-		    Object obj = specDigester.getEventSpecMap().get(event.getClass().getName());
-	        if (obj!=null) {
-	            EventSpec eventSpec = (EventSpec)obj;
-//                if (eventSpec.getTransformer()!=null) {
-//                    event = helper.transformEvent(event, eventSpec.getTransformer());
-//                }
-	            if (eventSpec.getHandlerSpecList().size()>0 || eventSpec.getTransportSpecList().size()>0) {
-	                for (Iterator it = eventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
-	                    helper.processWithHandler(event, (HandlerSpec)it.next());
-	                }
-	                for (Iterator it = eventSpec.getTransportSpecList().iterator(); it.hasNext(); ) {
-	                    helper.processWithTransport(event, (TransportSpec)it.next());
-	                }
-	            } else {
-	                Logger.getLogger(this.getClass()).info("No handler or transport found for events of class "+event.getClass());
-	            }
-	        } else {
-                UnknownEventSpec unknownEventSpec = specDigester.getUnknownEventSpec();
-	            //unknown event
-                if (unknownEventSpec.getTransformer()!=null) {
-                    event = helper.transformEvent(event, unknownEventSpec.getTransformer());
-                }
-	            if (unknownEventSpec.getHandlerSpecList().size()>0 || unknownEventSpec.getTransportSpecList().size()>0) {
-	                for (Iterator it = unknownEventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
-	                    helper.processWithHandler(event, (HandlerSpec)it.next());
-	                }
-	                for (Iterator it = unknownEventSpec.getTransportSpecList().iterator(); it.hasNext(); ) {
-	                    helper.processWithTransport(event, (TransportSpec)it.next());
-	                }
-	            } else {
-	                Logger.getLogger(this.getClass()).info("No handler or transport found for events of class "+event.getClass());
-	            }
-	        }
+			if (event instanceof NullEvent) {
+				Logger.getLogger(this.getClass()).info("Nothing to do, null event received: "+event);
+			} else {
+			    Object obj = specDigester.getEventSpecMap().get(event.getClass().getName());
+		        if (obj!=null) {
+		            EventSpec eventSpec = (EventSpec)obj;
+		            if (eventSpec.getHandlerSpecList().size()>0 || eventSpec.getTransportSpecList().size()>0) {
+		                for (Iterator it = eventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
+		                    helper.processWithHandler(event, (HandlerSpec)it.next());
+		                }
+		                for (Iterator it = eventSpec.getTransportSpecList().iterator(); it.hasNext(); ) {
+		                    helper.processWithTransport(event, (TransportSpec)it.next());
+		                }
+		            } else {
+		                Logger.getLogger(this.getClass()).info("No handler or transport found for events of class "+event.getClass());
+		            }
+		        } else {
+	                UnknownEventSpec unknownEventSpec = specDigester.getUnknownEventSpec();
+		            //unknown event
+		            if (unknownEventSpec.getHandlerSpecList().size()>0 || unknownEventSpec.getTransportSpecList().size()>0) {
+		                for (Iterator it = unknownEventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
+		                    helper.processWithHandler(event, (HandlerSpec)it.next());
+		                }
+		                for (Iterator it = unknownEventSpec.getTransportSpecList().iterator(); it.hasNext(); ) {
+		                    helper.processWithTransport(event, (TransportSpec)it.next());
+		                }
+		            } else {
+		                Logger.getLogger(this.getClass()).info("No handler or transport found for events of class "+event.getClass());
+		            }
+		        }
+			}
 	    } catch (Exception e) {
 	        Logger.getLogger(this.getClass()).error("Error processing event of class "+event.getClass());
 			StringWriter sw = new StringWriter();

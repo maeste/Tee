@@ -76,9 +76,7 @@ public class TeeHelper {
 		Logger.getLogger(this.getClass()).info("Transport = " + transportSpec);
 		if (transportSpec.getTransformer()!=null) {
 		    Logger.getLogger(this.getClass()).info("Transformer = " + transportSpec.getTransformer().getClass().getCanonicalName() );
-        }
-		if (transportSpec.getTransformer()!=null) {
-            event = (new TeeHelper()).transformEvent(event, transportSpec.getTransformer());
+            event = this.transformEvent(event, transportSpec.getTransformer());
 		}
 		TransportSpecInterface specializedTransport = transportSpec.getInnerTransport();
         if (specializedTransport instanceof Log4jTransportSpec) {

@@ -4,7 +4,6 @@
  */
 package it.javalinux.tee.event;
 
-import java.util.Date;
 
 /**
  * @author oracle
