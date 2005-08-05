@@ -25,6 +25,7 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
 import org.jboss.aspects.Injected;
+import org.jboss.aspects.asynch.Asynchronous;
 import org.jboss.logging.Logger;
 import org.jboss.system.ServiceMBeanSupport;
 
@@ -88,7 +89,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
      * @param event
      * 
      */
-	//@Asynchronous
+	@Asynchronous
 	public void process(Event event) {
 		Transaction motherTransaction = null;
 		try {
