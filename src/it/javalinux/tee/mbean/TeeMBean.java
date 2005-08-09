@@ -28,6 +28,14 @@ public interface TeeMBean extends ServiceMBean{
 	 * @param teeName The TeeName to set.
 	 */
 	public void setTeeName(String teeName);
+	
+	public Long getNumberOfEventProcessed();
+	
+	public Long getNumberOfEventTransformed();
+	
+	public Long getNumberOfEventFailed();
+	
+	public Double getAvarageProcessingTime();
 
 	
 	

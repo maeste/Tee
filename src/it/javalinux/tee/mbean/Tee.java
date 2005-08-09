@@ -43,6 +43,11 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
     
     private SpecificationDigester specDigester = null;
 	
+	private Long numberOfEventProcessed;
+	private Long numberOfEventTransformed;
+	private Long numberOfEventFailed;
+	private Long totalProcessingTime;
+	
 	@Injected TransactionManager tm;
 	
 	/* (non-Javadoc)
@@ -104,6 +109,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 			//get handler and/or transport right for this event 
 			// and invoke them passing event and log option
 		    TeeHelper helper = new TeeHelper();
+			
 			if (event instanceof NullEvent) {
 				Logger.getLogger(this.getClass()).info("Nothing to do, null event received: "+event);
 			} else {
@@ -112,10 +118,14 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		            EventSpec eventSpec = (EventSpec)obj;
 		            if (eventSpec.getHandlerSpecList().size()>0 || eventSpec.getTransportSpecList().size()>0) {
 		                for (Iterator it = eventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
+							long startProcessingTime = System.currentTimeMillis();
 		                    helper.processWithHandler(event, (HandlerSpec)it.next());
+							this.numberOfEventProcessed = new Long(this.numberOfEventProcessed.longValue() + 1);
+							this.totalProcessingTime = this.totalProcessingTime + (System.currentTimeMillis() - startProcessingTime);
 		                }
 		                for (Iterator it = eventSpec.getTransportSpecList().iterator(); it.hasNext(); ) {
 		                    helper.processWithTransport(event, (TransportSpec)it.next());
+							this.numberOfEventTransformed = new Long(this.numberOfEventTransformed.longValue() + 1);
 		                }
 		            } else {
 		                Logger.getLogger(this.getClass()).info("No handler or transport found for events of class "+event.getClass());
@@ -123,6 +133,9 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		        } else {
 	                UnknownEventSpec unknownEventSpec = specDigester.getUnknownEventSpec();
 		            //unknown event
+	                if (unknownEventSpec.getTransformer()!=null) {
+	                    event = helper.transformEvent(event, unknownEventSpec.getTransformer());
+	                }
 		            if (unknownEventSpec.getHandlerSpecList().size()>0 || unknownEventSpec.getTransportSpecList().size()>0) {
 		                for (Iterator it = unknownEventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
 		                    helper.processWithHandler(event, (HandlerSpec)it.next());
@@ -135,11 +148,13 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		            }
 		        }
 			}
+
 	    } catch (Exception e) {
 	        Logger.getLogger(this.getClass()).error("Error processing event of class "+event.getClass());
 			StringWriter sw = new StringWriter();
     		e.printStackTrace(new PrintWriter(sw));
     		Logger.getLogger(this.getClass()).error(sw.toString());
+			this.numberOfEventFailed = new Long(this.numberOfEventFailed.longValue() + 1);
 			try {
 				tm.setRollbackOnly();
 			} catch (IllegalStateException e1) {
@@ -189,5 +204,31 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	void setTransactionManager(TransactionManager tm) {
 		this.tm = tm;
 	}
+	
+
+
+
+	public Double getAvarageProcessingTime() {
+		return new Double((double)this.totalProcessingTime/(double)this.numberOfEventProcessed);
+	}
+	
+
+
+	public Long getNumberOfEventTransformed() {
+		return numberOfEventTransformed;
+	}
+
+
+	public Long getNumberOfEventFailed() {
+		return numberOfEventFailed;
+	}
+	
+
+
+	public Long getNumberOfEventProcessed() {
+		return numberOfEventProcessed;
+	}
+	
+	
 	
 }
