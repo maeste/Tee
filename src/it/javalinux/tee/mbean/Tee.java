@@ -43,10 +43,10 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
     
     private SpecificationDigester specDigester = null;
 	
-	private Long numberOfEventProcessed;
-	private Long numberOfEventTransformed;
-	private Long numberOfEventFailed;
-	private Long totalProcessingTime;
+	private Long numberOfEventProcessed = new Long(0);
+	private Long numberOfEventTransformed = new Long(0);
+	private Long numberOfEventFailed = new Long(0);
+	private Long totalProcessingTime = new Long(0);
 	
 	@Injected TransactionManager tm;
 	
@@ -133,9 +133,6 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		        } else {
 	                UnknownEventSpec unknownEventSpec = specDigester.getUnknownEventSpec();
 		            //unknown event
-	                if (unknownEventSpec.getTransformer()!=null) {
-	                    event = helper.transformEvent(event, unknownEventSpec.getTransformer());
-	                }
 		            if (unknownEventSpec.getHandlerSpecList().size()>0 || unknownEventSpec.getTransportSpecList().size()>0) {
 		                for (Iterator it = unknownEventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
 		                    helper.processWithHandler(event, (HandlerSpec)it.next());
