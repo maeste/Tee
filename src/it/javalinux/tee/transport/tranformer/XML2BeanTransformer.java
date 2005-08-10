@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.SqlTimestampConverter;
+import org.jboss.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -29,6 +30,7 @@ public class XML2BeanTransformer implements TransformerInterface {
 		if (!(inputEvent instanceof XMLEvent) ) {
 			throw new IllegalArgumentException("Cant apply Xml2BeanTransformer to an event that is not an XMLEvent");
 		}
+		
 		InputSource src = new InputSource(new StringReader(((XMLEvent) inputEvent).getXmlString()));
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		//factory.setNamespaceAware(true);
@@ -36,6 +38,7 @@ public class XML2BeanTransformer implements TransformerInterface {
 		try {
 			doc = factory.newDocumentBuilder().parse(src);
 		} catch (Exception e) {
+			Logger.getLogger(this.getClass()).info(((XMLEvent) inputEvent).getXmlString());
 			throw new IllegalArgumentException("unparsable xml");
 		}
 		Element element = (Element) doc.getElementsByTagName("XmlEvent").item(0);
@@ -47,6 +50,7 @@ public class XML2BeanTransformer implements TransformerInterface {
 		try {
 			bean = (Event) Thread.currentThread().getContextClassLoader().loadClass(eventName).newInstance();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new IllegalArgumentException("Impossible to instanciate EventName bean:" + eventName);
 		}
 		NodeList nodes = element.getChildNodes();
