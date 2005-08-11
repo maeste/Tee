@@ -5,6 +5,7 @@
 package it.javalinux.tee.interceptor;
 
 import it.javalinux.tee.event.Event;
+import it.javalinux.tee.event.XMLEvent;
 import it.javalinux.tee.misc.ServiceLocator;
 
 import java.io.PrintWriter;
@@ -49,6 +50,10 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
 	        Logger.getLogger(this.getClass()).debug("Message received...");
 	        Event event = (Event)((AQjmsAdtMessage)arg0).getAdtPayload();
 	        Logger.getLogger(this.getClass()).debug(event.getClass());
+			if (event instanceof XMLEvent) {
+				XMLEvent xmlEvent = (XMLEvent)event;
+				xmlEvent.setXmlString(xmlEvent.getXmlString());
+			}
 			this.intercept(event);
 	    } catch (Exception e) {
 	        Logger.getLogger(this.getClass()).error("Error while enqueueing!");
