@@ -5,6 +5,12 @@
   
   <xsl:template match="Tee">
     <xsl:element name="server">
+      <!-- DLQ section -->
+      <xsl:element name="mbean">
+        <xsl:attribute name="code">org.jboss.mq.server.jmx.Queue</xsl:attribute>
+	<xsl:attribute name="name"><xsl:text>jboss.mq.destination:service=Queue,name=</xsl:text><xsl:value-of select="Name"/><xsl:text>DLQ</xsl:text></xsl:attribute>
+	<xsl:element name="depends"><xsl:attribute name="optional-attribute-name">DestinationManager</xsl:attribute>jboss.mq:service=DestinationManager</xsl:element>
+      </xsl:element>
       <!-- Tee section -->
       <xsl:element name="mbean">
         <xsl:attribute name="code">it.javalinux.tee.mbean.Tee</xsl:attribute>
