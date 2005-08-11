@@ -4,11 +4,13 @@
  */
 package it.javalinux.tee.event;
 
+import java.io.Serializable;
+
 
 /**
  * @author oracle
  *
  */
-public interface Event {
+public interface Event extends Serializable {
 
 }

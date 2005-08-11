@@ -6,13 +6,9 @@
  */
 package it.javalinux.tee.event;
 
-import java.io.StringWriter;
-import java.util.Date;
-
-import org.jdom.output.XMLOutputter;
 
 public class XMLEvent implements Event {
-	private String xmlString;
+	protected String xmlString;
 
 	public String getXmlString() {
 		return xmlString;
@@ -24,6 +20,9 @@ public class XMLEvent implements Event {
 	}
 
 
+	public String toString() {
+		return this.getXmlString();
+	}
 	
 	
 

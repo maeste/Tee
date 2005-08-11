@@ -17,7 +17,9 @@ import it.javalinux.tee.specification.UnknownEventSpec;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.transaction.Status;
 import javax.transaction.SystemException;
@@ -47,6 +49,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	private Long numberOfEventTransformed = new Long(0);
 	private Long numberOfEventFailed = new Long(0);
 	private Long totalProcessingTime = new Long(0);
+	private Long maxProcessTime = new Long(0);
 	
 	@Injected TransactionManager tm;
 	
@@ -94,7 +97,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
      * @param event
      * 
      */
-	@Asynchronous
+	@Asynchronous 
 	public void process(Event event) {
 		Transaction motherTransaction = null;
 		try {
@@ -120,8 +123,12 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		                for (Iterator it = eventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
 							long startProcessingTime = System.currentTimeMillis();
 		                    helper.processWithHandler(event, (HandlerSpec)it.next());
+							long processTime = (System.currentTimeMillis() - startProcessingTime);
 							this.numberOfEventProcessed = new Long(this.numberOfEventProcessed.longValue() + 1);
-							this.totalProcessingTime = this.totalProcessingTime + (System.currentTimeMillis() - startProcessingTime);
+							this.totalProcessingTime = this.totalProcessingTime + processTime;
+							if (this.maxProcessTime < processTime ) {
+								this.maxProcessTime = processTime;
+							}
 		                }
 		                for (Iterator it = eventSpec.getTransportSpecList().iterator(); it.hasNext(); ) {
 		                    helper.processWithTransport(event, (TransportSpec)it.next());
@@ -152,6 +159,32 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
     		e.printStackTrace(new PrintWriter(sw));
     		Logger.getLogger(this.getClass()).error(sw.toString());
 			this.numberOfEventFailed = new Long(this.numberOfEventFailed.longValue() + 1);
+			Transaction currentTransaction = null;
+			try {
+				if (tm.getStatus() != Status.STATUS_NO_TRANSACTION) {
+					currentTransaction = tm.suspend();
+				}
+				tm.begin();
+				DLQController.putEvent(event,this.teeName);
+				tm.commit();
+				if (currentTransaction != null ) {
+	    			tm.resume(currentTransaction);
+	    		}
+			} catch (Exception eDLQ) {
+				Logger.getLogger(this.getClass()).error("Error while inserting a failed Event in DLQ: "+ event.toString());
+				sw = new StringWriter();
+				eDLQ.printStackTrace(new PrintWriter(sw));
+	    		Logger.getLogger(this.getClass()).error(sw.toString());
+				try {
+					tm.rollback();
+					if (currentTransaction != null ) {
+		    			tm.resume(currentTransaction);
+		    		}
+				}catch (Exception oneMoreException) {
+					
+				}
+				
+			}
 			try {
 				tm.setRollbackOnly();
 			} catch (IllegalStateException e1) {
@@ -225,6 +258,70 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	public Long getNumberOfEventProcessed() {
 		return numberOfEventProcessed;
 	}
+
+
+	public Long getMaxProcessTime() {
+		return maxProcessTime;
+	}
+
+
+	public String viewFirstDLQEvent() {
+		try {
+			return DLQController.viewFirstEvent(this.teeName).toString();
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+    		e.printStackTrace(new PrintWriter(sw));
+			return "Error in viewFirstDLQEvent: "+ sw.toString();
+			
+			
+		}
+	}
+
+
+	public int processFirstDLQEvent() {
+		try {
+			this.process(DLQController.getFirstEvent(this.teeName));
+			return 1;
+		} catch (Exception e) {
+			
+			StringWriter sw = new StringWriter();
+    		e.printStackTrace(new PrintWriter(sw));
+    		Logger.getLogger(this.getClass()).error(sw.toString());
+			return 0;
+		}
+		
+	}
+
+
+	public int processAllDLQEvent() {
+		try {
+			List<Event> eventsList = DLQController.getAllEvent(this.teeName);
+			for (Event eventToProcess : eventsList) {
+				this.process(eventToProcess);
+			}
+			return 1;
+		} catch (Exception e) {
+			
+			StringWriter sw = new StringWriter();
+    		e.printStackTrace(new PrintWriter(sw));
+    		Logger.getLogger(this.getClass()).error(sw.toString());
+			return 0;
+		}
+	}
+	
+	public int cleanDLQ() {
+		try {
+			List<Event> eventsList = DLQController.getAllEvent(this.teeName);
+			return 1;
+		} catch (Exception e) {
+			
+			StringWriter sw = new StringWriter();
+    		e.printStackTrace(new PrintWriter(sw));
+    		Logger.getLogger(this.getClass()).error(sw.toString());
+			return 0;
+		}
+	}
+	
 	
 	
 	

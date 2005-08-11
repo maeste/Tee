@@ -30,8 +30,7 @@ public class XML2BeanTransformer implements TransformerInterface {
 		if (!(inputEvent instanceof XMLEvent) ) {
 			throw new IllegalArgumentException("Cant apply Xml2BeanTransformer to an event that is not an XMLEvent");
 		}
-		
-		InputSource src = new InputSource(new StringReader(((XMLEvent) inputEvent).getXmlString()));
+		InputSource src = new InputSource(new StringReader(((XMLEvent) inputEvent).getXmlString().replaceAll("&","&amp;")));
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		//factory.setNamespaceAware(true);
 		Document doc =null;
