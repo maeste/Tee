@@ -17,8 +17,8 @@ import org.jboss.logging.Logger;
 public class EventSpec {
     
     private String eventClass;
-    private List handlerSpecList = new ArrayList();
-    private List transportSpecList = new ArrayList();
+    private List<HandlerSpec> handlerSpecList = new ArrayList<HandlerSpec>();
+    private List<TransportSpec> transportSpecList = new ArrayList<TransportSpec>();
     
     
     /**

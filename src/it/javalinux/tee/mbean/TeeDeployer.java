@@ -7,6 +7,7 @@
 package it.javalinux.tee.mbean;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -83,6 +84,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	public void init(DeploymentInfo di) throws DeploymentException {
 		try {
             URL myUrl = di.url;
+			URL myEventsUrl = null;
 			// resolve the watch
             if (di.url.getProtocol().equals("file")) {
                 File file = new File(di.url.getFile());
@@ -91,16 +93,20 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
                     di.watch = di.url;
                     if (di.url.getFile().endsWith(".tee")) {
                         myUrl = JarUtils.extractNestedJar(di.localCl.findResource("META-INF/jboss-tee.xml"), this.tempDeployDir);
+						myEventsUrl = JarUtils.extractNestedJar(di.localCl.findResource("META-INF/tee-events.xml"), this.tempDeployDir);
                     }
                 } else {
                     //If directory we watch the xml files
                     di.watch = new URL(di.url, "META-INF/jboss-tee.xml");
                     myUrl = di.watch;
+					myEventsUrl = new URL(di.url, "META-INF/tee-events.xml");
                 }
             } else {
                 // We watch the top only, no directory support
                 di.watch = di.url;
+				//TODO!! che si fa con myEventsUrl?
             }
+			
 			
 			//jboss-tee.xml parsing...
 			Document jbossTeeDocument = this.readDocument(new File(myUrl.getFile()));
@@ -110,7 +116,8 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 			NodeList wsIntercNodeList = jbossTeeDocument.getElementsByTagName("WSInterceptor");
 			NodeList jmsIntercNodeList = jbossTeeDocument.getElementsByTagName("JMSInterceptor");
 			NodeList oaqIntercNodeList = jbossTeeDocument.getElementsByTagName("OAQInterceptor");
-
+			
+			//Getting Tee's name...
 			String teeName = null;
 			NodeList nl = jbossTeeDocument.getElementsByTagName("Name");
 			for (int i = 0; i < nl.getLength(); i++) {
@@ -119,10 +126,12 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 			        teeName = node.getFirstChild().getNodeValue();
 			    }
 			}
+			
+			//Copying events file...
 			String tempDeploySubDirPrefix = this.tempDeployDir+"/"+teeName+"-dep";
 			File specificationFile = new File(tempDeploySubDirPrefix+".xml");
 			specificationFile.createNewFile();
-			this.writeDocument(jbossTeeDocument, specificationFile);
+			this.writeFile(new FileInputStream(myEventsUrl.getFile()),specificationFile);
 			
 			
 			if (sessionBeanIntercNodeList.getLength()>0 || wsIntercNodeList.getLength()>0 ||
@@ -175,14 +184,14 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
             //enable aop
             File aopXml = new File(tempDeploySubDirPrefix+"-aop.xml");
             aopXml.createNewFile();
-            InputStream is = Tee.class.getResourceAsStream("/jboss-aop.xml"); //is there a better way? //TODO! Verificare percorso
+            InputStream is = Tee.class.getResourceAsStream("/jboss-aop.xml"); //is there a better way?
             this.writeFile(is, aopXml);
             log.info("generated file: "+aopXml.getAbsolutePath());
             new DeploymentInfo(aopXml.toURL(), di, getServer());
             
 			//deploy nested jars (containing events for example)
 			File parentDir = null;
-			HashMap extractedJars = new HashMap();
+			HashMap<String,URL> extractedJars = new HashMap<String,URL>();
 			if (di.isDirectory) {
 				parentDir = new File(di.localUrl.getFile());
 			} else if (di.localUrl.getFile().endsWith(".tee")) {
@@ -377,6 +386,7 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 		return factory.newDocumentBuilder().parse(file);
 	}
 	
+	
 	/**
 	 * 
 	 * @param file
@@ -427,9 +437,14 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 	}
     
 	
+	/**
+	 * 
+	 * @param in
+	 * @param dst
+	 * @throws IOException
+	 */
     private void writeFile(InputStream in, File dst) throws IOException {
         OutputStream out = new FileOutputStream(dst);
-        // Transfer bytes from in to out
         byte[] buf = new byte[1024];
         int len;
         while ((len = in.read(buf)) > 0) {

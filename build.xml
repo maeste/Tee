@@ -135,6 +135,7 @@
 			<fileset dir="${java.classes}" />
 			<fileset dir="xsl" />
 			<fileset file="jboss-tee.xsd"/>
+			<fileset file="tee-events.xsd"/>
 			<fileset file="META-INF/jboss-aop.xml"/>
 		</jar>
 		

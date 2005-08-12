@@ -26,8 +26,8 @@ public class SpecificationDigester {
 
 
     private static final String SPEC_PCKG = "it.javalinux.tee.specification";
-    private static final String XSD_PATH = "resource:jboss-tee.xsd";
-	private Map eventSpecMap = new HashMap();
+    private static final String XSD_PATH = "resource:tee-events.xsd";
+	private Map<String,EventSpec> eventSpecMap = new HashMap<String,EventSpec>();
 	private UnknownEventSpec unknownEventSpec;
 	
 	/**

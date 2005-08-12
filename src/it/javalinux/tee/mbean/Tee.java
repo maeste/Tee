@@ -17,7 +17,6 @@ import it.javalinux.tee.specification.UnknownEventSpec;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -202,13 +201,11 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
     			Logger.getLogger(this.getClass()).debug("commit transaction");
     			tm.commit();
     		}
-    		
     		if (motherTransaction != null ) {
     			Logger.getLogger(this.getClass()).debug("resume old transaction");
     			tm.resume(motherTransaction);
     		}
     	} catch (Exception e) {
-    		// TODO Qui bisogna salvare da qualche parte l'evento.
     		e.printStackTrace();
     	} 
 		
@@ -272,8 +269,6 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 			StringWriter sw = new StringWriter();
     		e.printStackTrace(new PrintWriter(sw));
 			return "Error in viewFirstDLQEvent: "+ sw.toString();
-			
-			
 		}
 	}
 
@@ -289,7 +284,6 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
     		Logger.getLogger(this.getClass()).error(sw.toString());
 			return 0;
 		}
-		
 	}
 
 
@@ -309,6 +303,7 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		}
 	}
 	
+	
 	public int cleanDLQ() {
 		try {
 			List<Event> eventsList = DLQController.getAllEvent(this.teeName);
@@ -321,8 +316,6 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 			return 0;
 		}
 	}
-	
-	
 	
 	
 }

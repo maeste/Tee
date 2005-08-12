@@ -17,7 +17,7 @@ import org.jboss.logging.Logger;
 public class CustomTransportSpec implements TransportSpecInterface {
     
     private String transportClass;
-    private List attributeSpecList = new ArrayList();
+    private List<AttributeSpec> attributeSpecList = new ArrayList<AttributeSpec>();
 	private TransformerSpec transformerSpec;
     
     /**
