@@ -70,9 +70,14 @@
   
   <xsl:template name="EnterpriseBeans-JMSInterceptor">
     <xsl:for-each select="Interceptors/JMSInterceptor">
+      <!-- Variables definition -->
+      <xsl:variable name="ejbName">
+        <xsl:text>JMS</xsl:text><xsl:value-of select="$teeName"/><xsl:value-of select="InterceptorID"/><xsl:text>MessageBean</xsl:text>
+      </xsl:variable>
+      <!-- Element generation... -->
       <xsl:element name="message-driven">
-        <xsl:element name="display-name"><xsl:value-of select="EjbName"/></xsl:element>
-        <xsl:element name="ejb-name"><xsl:value-of select="EjbName"/></xsl:element>
+        <xsl:element name="display-name"><xsl:value-of select="$ejbName"/></xsl:element>
+        <xsl:element name="ejb-name"><xsl:value-of select="$ejbName"/></xsl:element>
         <xsl:element name="ejb-class">it.javalinux.tee.interceptor.JMSInterceptorMessageBean</xsl:element>
 	<xsl:choose>
 	  <xsl:when test="AcknowledgeMode">
@@ -105,9 +110,14 @@
   
   <xsl:template name="EnterpriseBeans-OAQInterceptor">
     <xsl:for-each select="Interceptors/OAQInterceptor">
+      <!-- Variables definition -->
+      <xsl:variable name="ejbName">
+        <xsl:text>OAQ</xsl:text><xsl:value-of select="$teeName"/><xsl:value-of select="InterceptorID"/><xsl:text>MessageBean</xsl:text>
+      </xsl:variable>
+      <!-- Element generation... -->
       <xsl:element name="message-driven">
-        <xsl:element name="display-name"><xsl:value-of select="EjbName"/></xsl:element>
-        <xsl:element name="ejb-name"><xsl:value-of select="EjbName"/></xsl:element>
+        <xsl:element name="display-name"><xsl:value-of select="$ejbName"/></xsl:element>
+        <xsl:element name="ejb-name"><xsl:value-of select="$ejbName"/></xsl:element>
         <xsl:element name="ejb-class">it.javalinux.tee.interceptor.OAQInterceptorMessageBean</xsl:element>
 	<xsl:choose>
 	  <xsl:when test="AcknowledgeMode">
@@ -171,9 +181,14 @@
 
   <xsl:template name="ContainerTransaction-JMSInterceptor">
     <xsl:for-each select="Interceptors/JMSInterceptor">
+      <!-- Variables definition -->
+      <xsl:variable name="ejbName">
+        <xsl:text>JMS</xsl:text><xsl:value-of select="$teeName"/><xsl:value-of select="InterceptorID"/><xsl:text>MessageBean</xsl:text>
+      </xsl:variable>
+      <!-- Element generation... -->
       <xsl:element name="container-transaction">
         <xsl:element name="method">
-	  <xsl:element name="ejb-name"><xsl:value-of select="EjbName"/></xsl:element>
+	  <xsl:element name="ejb-name"><xsl:value-of select="$ejbName"/></xsl:element>
 	  <xsl:element name="method-name">*</xsl:element>
 	</xsl:element>
 	<xsl:element name="trans-attribute">Required</xsl:element>
@@ -183,9 +198,14 @@
   
   <xsl:template name="ContainerTransaction-OAQInterceptor">
     <xsl:for-each select="Interceptors/OAQInterceptor">
+      <!-- Variables definition -->
+      <xsl:variable name="ejbName">
+        <xsl:text>OAQ</xsl:text><xsl:value-of select="$teeName"/><xsl:value-of select="InterceptorID"/><xsl:text>MessageBean</xsl:text>
+      </xsl:variable>
+      <!-- Element generation... -->
       <xsl:element name="container-transaction">
         <xsl:element name="method">
-	  <xsl:element name="ejb-name"><xsl:value-of select="EjbName"/></xsl:element>
+	  <xsl:element name="ejb-name"><xsl:value-of select="$ejbName"/></xsl:element>
 	  <xsl:element name="method-name">*</xsl:element>
 	</xsl:element>
 	<xsl:element name="trans-attribute">Required</xsl:element>
