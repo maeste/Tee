@@ -12,11 +12,14 @@ import it.javalinux.tee.specification.UnknownEventSpec;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.digester.Digester;
 import org.jboss.logging.Logger;
@@ -42,7 +45,7 @@ public class SpecificationDigester {
 	 * Reads and parses the specification file mapping events to handlers and transports
 	 * 
 	 */
-	public void readSpecification(String teeName ) {
+	public void readSpecification(String teeName ) throws Exception {
 		String xmlPath = ServerConfigLocator.locate().getServerTempDeployDir().getAbsolutePath()+
 			"/"+teeName+"-dep.xml";
 		
@@ -133,8 +136,11 @@ public class SpecificationDigester {
             
             specificationInputStream.close();
         } catch (Exception e) {
-            Logger.getLogger(this.getClass()).info("An error occurred while parsing specification file "+teeName);
-            e.printStackTrace();
+            Logger.getLogger(this.getClass()).error("An error occurred while parsing specification file "+teeName);
+			StringWriter sw = new StringWriter();
+    		e.printStackTrace(new PrintWriter(sw));
+    		Logger.getLogger(this.getClass()).error(sw.toString());
+			throw e;
         }
         
 	}
@@ -147,7 +153,9 @@ public class SpecificationDigester {
 	 * @param eventSpec
 	 */
 	public void addEventSpec(EventSpec eventSpec) {
-        eventSpecMap.put(eventSpec.getEventClass(), eventSpec);
+		if (eventSpecMap.put(eventSpec.getEventClass(),eventSpec)!=null) {
+			throw new RuntimeException("Duplicate event "+eventSpec.getEventClass());
+		}
     }
 	
 	/**
@@ -170,13 +178,31 @@ public class SpecificationDigester {
         this.unknownEventSpec = unknownEventSpec;
     }
 	
-    
-    
-    
     public Map getEventSpecMap() {
         return eventSpecMap;
     }
+	
     public UnknownEventSpec getUnknownEventSpec() {
         return unknownEventSpec;
     }
+	
+	
+	public boolean areClassesLoadable() {
+		ClassLoadVerifier clv = new ClassLoadVerifier();
+		EventSpec eventSpec = null;
+		Set keySet1 = eventSpecMap.keySet();
+		boolean checkPassed = true;
+		Iterator it = keySet1.iterator();
+		while (it.hasNext() && checkPassed) {
+			eventSpec = eventSpecMap.get(it.next());
+			checkPassed = clv.verifyEventSpec(eventSpec);
+		}
+		if (checkPassed && unknownEventSpec!=null) {
+			checkPassed = clv.verifyEventSpec(unknownEventSpec);
+		}
+		return checkPassed;
+	}
+	
+	
+	
 }

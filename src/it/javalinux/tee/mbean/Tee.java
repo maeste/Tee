@@ -78,6 +78,9 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		Logger.getLogger(this.getClass()).debug("startService");
 		specDigester = new SpecificationDigester();
         specDigester.readSpecification(teeName);
+		if (!specDigester.areClassesLoadable()) {
+			throw new Exception("A class couldn't be loaded, start service failed!");
+		}
 	}
 	
 	
