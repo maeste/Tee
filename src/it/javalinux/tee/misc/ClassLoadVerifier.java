@@ -17,7 +17,7 @@ import java.util.List;
 import org.jboss.logging.Logger;
 
 /**
- * Verify wheter classes referenced by event and
+ * Verify whether classes referenced by event and
  * unknown event specification are loadable or not.
  * 
  * @author Alessio

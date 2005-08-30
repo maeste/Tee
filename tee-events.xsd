@@ -82,6 +82,52 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="MailTransport">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="To">
+								<xs:complexType>
+									<xs:choice>
+										<xs:element name="Custom"/>
+										<xs:element name="EventAttribute"/>
+									</xs:choice>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Cc">
+								<xs:complexType>
+									<xs:choice>
+										<xs:element name="Custom"/>
+										<xs:element name="EventAttribute"/>
+									</xs:choice>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Bcc">
+								<xs:complexType>
+									<xs:choice>
+										<xs:element name="Custom"/>
+										<xs:element name="EventAttribute"/>
+									</xs:choice>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Subject">
+								<xs:complexType>
+									<xs:choice>
+										<xs:element name="Custom"/>
+										<xs:element name="EventAttribute"/>
+									</xs:choice>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Body">
+								<xs:complexType>
+									<xs:choice>
+										<xs:element name="Custom"/>
+										<xs:element name="EventAttribute"/>
+									</xs:choice>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 			</xs:choice>
 			<xs:choice minOccurs="0" maxOccurs="1">
 				<xs:element name="XML2BeanTransformer"/>

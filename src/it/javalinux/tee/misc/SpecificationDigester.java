@@ -98,7 +98,31 @@ public class SpecificationDigester {
 	        digester.addCallMethod("*/Transport/Log4jTransport/Prefix/TransportClassName", "setTransportClassNamePrefixType");
 	        digester.addCallMethod("*/Transport/Log4jTransport/Prefix/Custom", "setCustomPrefixType");
 	        digester.addCallMethod("*/Transport/Log4jTransport/Prefix/Custom", "setPrefix", 0);
-
+			
+			//EmailTransport
+	        digester.addObjectCreate("*/Transport/MailTransport", SPEC_PCKG+".MailTransportSpec");
+	        digester.addSetNext("*/Transport/MailTransport", "setInnerTransport", SPEC_PCKG+".TransportSpecInterface");
+	        digester.addCallMethod("*/Transport/MailTransport/To/EventAttribute", "setToEventAttributeType");
+	        digester.addCallMethod("*/Transport/MailTransport/To/EventAttribute", "setTo", 0);
+	        digester.addCallMethod("*/Transport/MailTransport/To/Custom", "setToCustomType");
+	        digester.addCallMethod("*/Transport/MailTransport/To/Custom", "setTo", 0);
+	        digester.addCallMethod("*/Transport/MailTransport/Cc/EventAttribute", "setCcEventAttributeType");
+	        digester.addCallMethod("*/Transport/MailTransport/Cc/EventAttribute", "setCc", 0);
+	        digester.addCallMethod("*/Transport/MailTransport/Cc/Custom", "setCcCustomType");
+	        digester.addCallMethod("*/Transport/MailTransport/Cc/Custom", "setCc", 0);
+	        digester.addCallMethod("*/Transport/MailTransport/Bcc/EventAttribute", "setBccEventAttributeType");
+	        digester.addCallMethod("*/Transport/MailTransport/Bcc/EventAttribute", "setBcc", 0);
+	        digester.addCallMethod("*/Transport/MailTransport/Bcc/Custom", "setBccCustomType");
+	        digester.addCallMethod("*/Transport/MailTransport/Bcc/Custom", "setBcc", 0);
+	        digester.addCallMethod("*/Transport/MailTransport/Subject/EventAttribute", "setSubjectEventAttributeType");
+	        digester.addCallMethod("*/Transport/MailTransport/Subject/EventAttribute", "setSubject", 0);
+	        digester.addCallMethod("*/Transport/MailTransport/Subject/Custom", "setSubjectCustomType");
+	        digester.addCallMethod("*/Transport/MailTransport/Subject/Custom", "setSubject", 0);
+	        digester.addCallMethod("*/Transport/MailTransport/Body/EventAttribute", "setBodyEventAttributeType");
+	        digester.addCallMethod("*/Transport/MailTransport/Body/EventAttribute", "setBody", 0);
+	        digester.addCallMethod("*/Transport/MailTransport/Body/Custom", "setBodyCustomType");
+	        digester.addCallMethod("*/Transport/MailTransport/Body/Custom", "setBody", 0);
+			
 			//TeeTransport
 			digester.addObjectCreate("*/Transport/TeeTransport", SPEC_PCKG+".TeeTransportSpec");
             digester.addSetNext("*/Transport/TeeTransport", "setInnerTransport", SPEC_PCKG+".TransportSpecInterface");

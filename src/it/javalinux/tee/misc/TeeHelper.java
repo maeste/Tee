@@ -13,6 +13,7 @@ import it.javalinux.tee.specification.CustomTransportSpec;
 import it.javalinux.tee.specification.HandlerSpec;
 import it.javalinux.tee.specification.HibernateTransportSpec;
 import it.javalinux.tee.specification.Log4jTransportSpec;
+import it.javalinux.tee.specification.MailTransportSpec;
 import it.javalinux.tee.specification.Map2BeanTransformerSpec;
 import it.javalinux.tee.specification.TeeTransportSpec;
 import it.javalinux.tee.specification.TransformerSpec;
@@ -21,6 +22,7 @@ import it.javalinux.tee.specification.TransportSpecInterface;
 import it.javalinux.tee.specification.XML2BeanTransformerSpec;
 import it.javalinux.tee.transport.HibernateTransport;
 import it.javalinux.tee.transport.Log4jTransport;
+import it.javalinux.tee.transport.MailTransport;
 import it.javalinux.tee.transport.Transport;
 import it.javalinux.tee.transport.tranformer.Map2BeanTransformer;
 import it.javalinux.tee.transport.tranformer.TransformerInterface;
@@ -92,6 +94,37 @@ public class TeeHelper {
                 transport.setPrefix(spec.getPrefix());
             }
             transport.process(event);
+		} else if (specializedTransport instanceof MailTransportSpec) {
+            Logger.getLogger(this.getClass()).debug("Passing event to a MailTransport");
+            MailTransportSpec spec = (MailTransportSpec)specializedTransport;
+            MailTransport transport = new MailTransport();
+			ReflectionHelper refHelper = new ReflectionHelper();
+			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getToType())) {
+				transport.setTo(refHelper.getStringAttribute(event,spec.getTo()));
+			} else { //Custom
+				transport.setTo(spec.getTo());
+			}
+			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getCcType())) {
+				transport.setCc(refHelper.getStringAttribute(event,spec.getCc()));
+			} else { //Custom
+				transport.setCc(spec.getCc());
+			}
+			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getBccType())) {
+				transport.setBcc(refHelper.getStringAttribute(event,spec.getBcc()));
+			} else { //Custom
+				transport.setBcc(spec.getBcc());
+			}
+			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getSubjectType())) {
+				transport.setSubject(refHelper.getStringAttribute(event,spec.getSubject()));
+			} else { //Custom
+				transport.setSubject(spec.getSubject());
+			}
+			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getBodyType())) {
+				transport.setBody(refHelper.getStringAttribute(event,spec.getBody()));
+			} else { //Custom
+				transport.setBody(spec.getBody());
+			}
+            transport.process(event);
         } else if (specializedTransport instanceof HibernateTransportSpec) {
             Logger.getLogger(this.getClass()).debug("Passing event to an HibernateTransport");
             HibernateTransportSpec spec = (HibernateTransportSpec)specializedTransport;
@@ -155,5 +188,5 @@ public class TeeHelper {
         }
         return result;
     }
-    
+	
 }

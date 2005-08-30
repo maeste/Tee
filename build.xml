@@ -38,6 +38,9 @@
 		<pathelement location="${prj.libs2}/wsdl4j.jar" />
 		<pathelement location="${prj.libs2}/saaj.jar" />
 		<pathelement location="${prj.libs2}/aqapi.jar" />
+		<pathelement location="${prj.libs2}/mail.jar" />
+		<pathelement location="${prj.libs2}/mailapi.jar" />
+		<pathelement location="${prj.libs2}/activation.jar" />
 		<!--pathelement location="${prj.libs2}/jboss-j2ee.jar" /-->
 		<pathelement location="${prj.libs3}/jboss-j2ee.jar" />
 		<pathelement location="${prj.libs2}/jboss-aspect-library-jdk50.jar" />
