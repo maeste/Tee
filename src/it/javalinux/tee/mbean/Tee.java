@@ -26,6 +26,7 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
 import org.jboss.aspects.Injected;
+import org.jboss.aspects.asynch.AsynchExecutor;
 import org.jboss.aspects.asynch.Asynchronous;
 import org.jboss.logging.Logger;
 import org.jboss.system.ServiceMBeanSupport;
@@ -36,6 +37,7 @@ import org.jboss.system.ServiceMBeanSupport;
  * To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
+@AsynchExecutor (value=it.javalinux.tee.MyExecutor.class) 
 public class Tee extends ServiceMBeanSupport implements TeeMBean  {
     
 

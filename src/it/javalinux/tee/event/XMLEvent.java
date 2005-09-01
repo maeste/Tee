@@ -23,6 +23,26 @@ public class XMLEvent implements Event {
 	public String toString() {
 		return this.getXmlString();
 	}
+
+
+	public boolean equals(Object obj) {
+		if (! (obj instanceof XMLEvent)) {
+			return false;
+		}
+		if (this.xmlString == null) {
+			if (((XMLEvent) obj).getXmlString() == null ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return this.xmlString.equals(((XMLEvent) obj).getXmlString());
+	}
+
+
+	public int hashCode() {
+		return this.xmlString.hashCode();
+	}
 	
 	
 

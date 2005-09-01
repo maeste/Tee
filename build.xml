@@ -19,9 +19,13 @@
 
 	<property name="dist.temp" value="${prj.tempdir}/dist" />
 	<property name="dist" value="${dist.temp}" />
+	<property name="jboss.aop.lib50" value="/dati/jboss-aop_1.3/lib-50"></property>
+	<property name="aop50jar" value="${jboss.aop.lib50}/jboss-aop-jdk50.jar"/>
+	
 	
 	<path id="project.class.path">
 		<pathelement path="${classpath}" />
+		<pathelement path="/dati/project/Tee_trk/classes" />
 		<pathelement location="${prj.libs}/jboss-common.jar" />
 		<pathelement location="${prj.libs2}/jdom.jar" />
 		<pathelement location="${prj.libs}/jboss-jmx.jar" />
@@ -38,6 +42,7 @@
 		<pathelement location="${prj.libs2}/wsdl4j.jar" />
 		<pathelement location="${prj.libs2}/saaj.jar" />
 		<pathelement location="${prj.libs2}/aqapi.jar" />
+		<pathelement location="${prj.libs3}/jboss-remoting.jar"/>
 		<pathelement location="${prj.libs2}/mail.jar" />
 		<pathelement location="${prj.libs2}/mailapi.jar" />
 		<pathelement location="${prj.libs2}/activation.jar" />
@@ -46,6 +51,9 @@
 		<pathelement location="${prj.libs2}/jboss-aspect-library-jdk50.jar" />
 		<pathelement location="${prj.libs2}/jboss-aop-jdk50.jar" />
 		<pathelement path="/dati/jboss-aop_1.3/lib-50/jboss-aspect-library-jdk50.jar"/>
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/jboss-aop-jdk50.jar"/>
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/javassist.jar"/>
+		<pathelement path="/dati/jboss-aop_1.3/lib-50/trove.jar"/>
 		<pathelement location="${prj.libs2}/junit.jar" />
 	</path>
 	
@@ -110,6 +118,7 @@
 			<classpath refid="jboss.aop.classpath"/>
 			<src path="${java.classes}"/>
 			<include name="**/Tee.class"/>
+			<include name="**/TestThread.class"/>
 			<aoppath path="META-INF/jboss-aop.xml"/>
 			<aopclasspath path="/dati/jboss-aop_1.3/lib-50/jboss-aspect-library-jdk50.jar"/>
 		</aopc>
@@ -260,6 +269,16 @@
 			classpathref="xdoclet.class.path"
 		/>
 	</target>
+	
+
+	   <target name="run" depends="compile">
+	      <java fork="yes" failOnError="true" className="it.javalinux.tee.TestThread">
+	         <sysproperty key="jboss.aop.path" value="META-INF/jboss-aop.xml"/>
+	         <jvmarg value="-javaagent:${aop50jar}"/>
+	         <classpath refid="project.class.path"/>
+	      </java>
+	   </target>
+
 	
 	
 	

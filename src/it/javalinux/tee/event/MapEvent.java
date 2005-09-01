@@ -21,7 +21,7 @@ public class MapEvent implements Event, Serializable {
 
     
     public String toString() {
-        return "I'm a MapEvent :-)";
+        return this.map.toString();
     }
     
     
@@ -31,4 +31,19 @@ public class MapEvent implements Event, Serializable {
     public void setMap(HashMap<String,Object> map) {
         this.map = map;
     }
+
+
+	public boolean equals(Object obj) {
+		if (!(obj instanceof MapEvent)) {
+			return false;
+		}
+		return this.getMap().equals(((MapEvent) obj).getMap());
+	}
+
+
+	public int hashCode() {
+		return this.getMap().hashCode();
+	}
+	
+	
 }

@@ -56,6 +56,20 @@ public class TestEvent implements Event {
 	public String toString() {
 	    return "fooString: "+fooString+" fooInteger: "+fooInteger+" fooFloat: "+fooFloat+" fooint: "+fooInt;
     }
+
+
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return this.toString().equals(obj.toString());
+	}
+
+
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return this.toString().hashCode();
+	}
+	
+	
 	
 
 
