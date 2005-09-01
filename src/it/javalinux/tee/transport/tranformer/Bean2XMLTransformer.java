@@ -28,7 +28,7 @@ public class Bean2XMLTransformer implements TransformerInterface {
 			strWriter.write("<EventName>"+ inputEvent.getClass().getCanonicalName()+"</EventName>");
 			Map propertyMap = BeanUtils.describe(inputEvent);
 			for (Object propertyName : propertyMap.keySet() ) {
-				if (! "class".equals(propertyName) ) {
+				if (!"class".equals(propertyName) && propertyMap.get(propertyName)!=null) {
 					strWriter.write("<" + propertyName + ">");
 					strWriter.write(propertyMap.get(propertyName).toString());
 					strWriter.write("</" + propertyName + ">");
@@ -37,7 +37,8 @@ public class Bean2XMLTransformer implements TransformerInterface {
 			}
 			strWriter.write("</XmlEvent>");
 		}catch (Exception e) {
-			throw new TransformationException("unable to transform event:" + inputEvent.toString() + "caused by Exception:" + e.getMessage());
+			e.printStackTrace();
+			throw new TransformationException("unable to transform event:" + inputEvent.toString() + " caused by Exception:" + e.getMessage());
 		}
 		returnEvent.setXmlString(strWriter.toString());
 		return returnEvent;

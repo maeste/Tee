@@ -8,6 +8,8 @@ import it.javalinux.tee.event.Event;
 import it.javalinux.tee.exception.TransformationException;
 import it.javalinux.tee.handler.Handler;
 import it.javalinux.tee.specification.AttributeSpec;
+import it.javalinux.tee.specification.Bean2MapTransformerSpec;
+import it.javalinux.tee.specification.Bean2XMLTransformerSpec;
 import it.javalinux.tee.specification.CustomTransformerSpec;
 import it.javalinux.tee.specification.CustomTransportSpec;
 import it.javalinux.tee.specification.HandlerSpec;
@@ -24,6 +26,8 @@ import it.javalinux.tee.transport.HibernateTransport;
 import it.javalinux.tee.transport.Log4jTransport;
 import it.javalinux.tee.transport.MailTransport;
 import it.javalinux.tee.transport.Transport;
+import it.javalinux.tee.transport.tranformer.Bean2MapTransformer;
+import it.javalinux.tee.transport.tranformer.Bean2XMLTransformer;
 import it.javalinux.tee.transport.tranformer.Map2BeanTransformer;
 import it.javalinux.tee.transport.tranformer.TransformerInterface;
 import it.javalinux.tee.transport.tranformer.XML2BeanTransformer;
@@ -177,6 +181,14 @@ public class TeeHelper {
 		} else if (transformerSpec instanceof Map2BeanTransformerSpec) {
 			Logger.getLogger(this.getClass()).debug("Passing event to a Map2BeanTransformer");
             transformer = new Map2BeanTransformer();
+            result = transformer.transform(event);
+		} else if (transformerSpec instanceof Bean2MapTransformerSpec) {
+			Logger.getLogger(this.getClass()).debug("Passing event to a Bean2MapTransformer");
+            transformer = new Bean2MapTransformer();
+            result = transformer.transform(event);
+		} else if (transformerSpec instanceof Bean2XMLTransformerSpec) {
+			Logger.getLogger(this.getClass()).debug("Passing event to a Bean2XMLTransformer");
+            transformer = new Bean2XMLTransformer();
             result = transformer.transform(event);
         } else {
             throw new IllegalArgumentException("unknown transformerSpec: "+transformerSpec);

@@ -30,13 +30,13 @@ public class Bean2XMLTransformerTest extends TestCase {
 					"</XmlEvent>");
 			TestEvent testEvent= new TestEvent();
 			testEvent.setFooString("fooString");
-			testEvent.setFooInteger(new Integer(1));
-			testEvent.setFooInt(10);
-			testEvent.setFooFloat(new Float(10.34));
+			//testEvent.setFooInteger(new Integer(1));
+			//testEvent.setFooInt(10);
+			//testEvent.setFooFloat(new Float(10.34));
 			Bean2XMLTransformer transformer = new Bean2XMLTransformer();
 			XMLEvent transformedEvent = (XMLEvent) transformer.transform(testEvent);
-			System.out.println(xmlEvent);
-			System.out.println(transformedEvent);
+			System.out.println("xmlEvent:         "+xmlEvent);
+			System.out.println("transformedEvent: "+transformedEvent);
 			assertTrue(xmlEvent.equals(transformedEvent));
 			
 		} catch (Exception e) {

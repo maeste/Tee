@@ -132,9 +132,15 @@ public class SpecificationDigester {
 		    //XML2BeanTransformer
             digester.addObjectCreate("*/Transport/XML2BeanTransformer", SPEC_PCKG+".XML2BeanTransformerSpec");
             digester.addSetNext("*/Transport/XML2BeanTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
-//			Map2BeanTransformer
+			//Map2BeanTransformer
             digester.addObjectCreate("*/Transport/Map2BeanTransformer", SPEC_PCKG+".Map2BeanTransformerSpec");
             digester.addSetNext("*/Transport/Map2BeanTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
+			//Bean2MapTransformer
+            digester.addObjectCreate("*/Transport/Bean2MapTransformer", SPEC_PCKG+".Bean2MapTransformerSpec");
+            digester.addSetNext("*/Transport/Bean2MapTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
+			//Bean2XMLTransformer
+            digester.addObjectCreate("*/Transport/Bean2XMLTransformer", SPEC_PCKG+".Bean2XMLTransformerSpec");
+            digester.addSetNext("*/Transport/Bean2XMLTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");
             //CustomTransformer
             digester.addObjectCreate("*/Transport/CustomTransformer", SPEC_PCKG+".CustomTransformerSpec");
             digester.addSetNext("*/Transport/CustomTransformer", "setTransformer", SPEC_PCKG+".TransformerSpec");

@@ -6,16 +6,14 @@
  */
 package it.javalinux.tee.transport.tranformer;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
+import it.javalinux.tee.event.Event;
+import it.javalinux.tee.event.MapEvent;
+import it.javalinux.tee.exception.TransformationException;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
-
-import it.javalinux.tee.event.Event;
-import it.javalinux.tee.event.MapEvent;
-import it.javalinux.tee.exception.TransformationException;
 
 public class Bean2MapTransformer implements TransformerInterface {
 

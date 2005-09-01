@@ -60,7 +60,7 @@ public class MyExecutor implements ExecutorAbstraction
 
   public RemotableFuture execute(MethodInvocation invocation) throws Exception
   {
-     System.out.println("MyExecutor");
+     //System.out.println("MyExecutor");
 	 final MethodInvocation copy = (MethodInvocation) invocation.copy();
      final ClassLoader cl = Thread.currentThread().getContextClassLoader();
      
