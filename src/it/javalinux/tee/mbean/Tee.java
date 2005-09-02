@@ -96,13 +96,16 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 
 	
 	
-
+	@Asynchronous 
+	public void process(Event event) {
+		singleThreadProcess(event);
+	}
     /**
      * @param event
      * 
      */
-	@Asynchronous 
-	public void process(Event event) {
+	 
+	public void singleThreadProcess(Event event) {
 		Transaction motherTransaction = null;
 		try {
 			if (tm.getStatus() != Status.STATUS_NO_TRANSACTION) {

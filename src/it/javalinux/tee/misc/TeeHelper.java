@@ -151,7 +151,7 @@ public class TeeHelper {
                     .append(spec.getTeeJndiName()).toString());
             Object[] parArray = {event};
             String[] signArray = {"it.javalinux.tee.event.Event"};
-            ServiceLocator.getInstance().callMBean("it.javalinux:service="+spec.getTeeJndiName(),"process",parArray, signArray);
+            ServiceLocator.getInstance().callMBean("it.javalinux:service="+spec.getTeeJndiName(),"singleThreadProcess",parArray, signArray);
         }
         
     }

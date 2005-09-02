@@ -20,6 +20,8 @@ public interface TeeMBean extends ServiceMBean{
     
 	public void process(Event event);
 	
+	public void singleThreadProcess(Event event);
+	
 	/**
 	 * @return Returns the TeeName.
 	 */

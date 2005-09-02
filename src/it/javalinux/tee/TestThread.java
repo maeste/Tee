@@ -19,6 +19,7 @@ public class TestThread {
 		System.out.println(TestThread.class.getAnnotations().length);
 		TestThread test = new TestThread();
 		for (int i = 0; i < 15; i++) {
+			System.out.println("starting thread #" + i);
 			test.testThreadExec(i);
 		}
 	}

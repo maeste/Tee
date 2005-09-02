@@ -10,10 +10,7 @@ package it.javalinux.tee;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.jboss.aop.Advisor;
 import org.jboss.aop.joinpoint.MethodInvocation;
@@ -29,29 +26,8 @@ import org.jboss.aspects.asynch.RemotableFuture;
 */
 public class MyExecutor implements ExecutorAbstraction
 {
-    public static class RetryPolicy implements RejectedExecutionHandler {
-        /**
-         * Creates a <tt>DiscardPolicy</tt>.
-         */
-        public RetryPolicy() { }
-
-        /**
-         * Does nothing, which has the effect of discarding task r.
-         * @param r the runnable task requested to be executed
-         * @param e the executor attempting to execute this task
-         */
-        public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
-//			while (e.getActiveCount() >= e.getMaximumPoolSize()) {
-//				System.out.println("waiting");
-//			}
-//			e.remove(r);
-//			e.execute(r);
-        }
-    }
-  private static ExecutorService executor =  Executors.newFixedThreadPool(5); 
-//  new ThreadPoolExecutor(0, 25,
-//          															15L, TimeUnit.SECONDS,
-//          															new SynchronousQueue<Runnable>(), new MyExecutor.RetryPolicy());
+  private static ExecutorService executor =  Executors.newFixedThreadPool(5);
+  private Object s = new Integer(1);
 
   public void setAdvisor(Advisor advisor)
   {
@@ -60,18 +36,24 @@ public class MyExecutor implements ExecutorAbstraction
 
   public RemotableFuture execute(MethodInvocation invocation) throws Exception
   {
-     //System.out.println("MyExecutor");
-	 final MethodInvocation copy = (MethodInvocation) invocation.copy();
+     final MethodInvocation copy = (MethodInvocation) invocation.copy();
      final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-     
+     synchronized (s) {
+		 while (((ThreadPoolExecutor) executor).getActiveCount()> 4){
+			 s.wait();
+			 
+	     }
+	 }
      java.util.concurrent.Future future = executor.submit(new Callable()
      {
         public Object call() throws Exception
         {
            try
            {
+			  System.out.println("***" + Thread.currentThread().getName());
               Thread.currentThread().setContextClassLoader(cl);
-              return copy.invokeNext();
+              Object ritorno = copy.invokeNext();
+			  return ritorno;
            }
            catch (Throwable throwable)
            {
@@ -81,11 +63,14 @@ public class MyExecutor implements ExecutorAbstraction
               }
               else
                  throw new Exception(throwable);
+           }finally {
+			   synchronized (s) {
+				   s.notifyAll();
+			   }
            }
         }
      });
-
-     return new FutureImplJavaUtilConcurrent(future);
+	 return new FutureImplJavaUtilConcurrent(future);
   }
 
 }
