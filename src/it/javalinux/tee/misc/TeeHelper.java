@@ -35,6 +35,7 @@ import it.javalinux.tee.transport.tranformer.XML2BeanTransformer;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.jboss.logging.Logger;
@@ -102,29 +103,29 @@ public class TeeHelper {
             Logger.getLogger(this.getClass()).debug("Passing event to a MailTransport");
             MailTransportSpec spec = (MailTransportSpec)specializedTransport;
             MailTransport transport = new MailTransport();
-			ReflectionHelper refHelper = new ReflectionHelper();
+			Map propertyMap = BeanUtils.describe(event);
 			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getToType())) {
-				transport.setTo(refHelper.getStringAttribute(event,spec.getTo()));
-			} else { //Custom
+				transport.setTo((String)propertyMap.get(spec.getTo()));
+			} else { //Custom or not set
 				transport.setTo(spec.getTo());
 			}
 			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getCcType())) {
-				transport.setCc(refHelper.getStringAttribute(event,spec.getCc()));
+				transport.setCc((String)propertyMap.get(spec.getCc()));
 			} else { //Custom
 				transport.setCc(spec.getCc());
 			}
 			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getBccType())) {
-				transport.setBcc(refHelper.getStringAttribute(event,spec.getBcc()));
+				transport.setBcc((String)propertyMap.get(spec.getBcc()));
 			} else { //Custom
 				transport.setBcc(spec.getBcc());
 			}
 			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getSubjectType())) {
-				transport.setSubject(refHelper.getStringAttribute(event,spec.getSubject()));
+				transport.setSubject((String)propertyMap.get(spec.getSubject()));
 			} else { //Custom
 				transport.setSubject(spec.getSubject());
 			}
 			if (MailTransportSpec.EVENT_ATTRIBUTE.equalsIgnoreCase(spec.getBodyType())) {
-				transport.setBody(refHelper.getStringAttribute(event,spec.getBody()));
+				transport.setBody((String)propertyMap.get(spec.getBody()));
 			} else { //Custom
 				transport.setBody(spec.getBody());
 			}
