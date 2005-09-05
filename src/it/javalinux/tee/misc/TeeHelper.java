@@ -32,8 +32,6 @@ import it.javalinux.tee.transport.tranformer.Map2BeanTransformer;
 import it.javalinux.tee.transport.tranformer.TransformerInterface;
 import it.javalinux.tee.transport.tranformer.XML2BeanTransformer;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -54,21 +52,13 @@ public class TeeHelper {
      * @param event
      * @param handlerSpec
      */
-    public void processWithHandler(Event event, HandlerSpec handlerSpec) {
-        try {
-            Logger.getLogger(this.getClass()).debug(new StringBuffer("Passing event to handler class ")
-                    .append(handlerSpec.getHandlerClass()).toString());
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            Logger.getLogger(this.getClass()).info("classLoader: "+classLoader);
-            Handler handler = (Handler)(classLoader.loadClass(handlerSpec.getHandlerClass()).newInstance());
-            handler.process(event);
-        } catch (Exception e) {
-            Logger.getLogger(this.getClass()).error("An error occurred during event processing by handler "+
-                    handlerSpec.getHandlerClass());
-            StringWriter sw = new StringWriter();
-    		e.printStackTrace(new PrintWriter(sw));
-    		Logger.getLogger(this.getClass()).error(sw.toString());
-        }
+    public void processWithHandler(Event event, HandlerSpec handlerSpec) throws Exception {
+        Logger.getLogger(this.getClass()).debug(new StringBuffer("Passing event to handler class ")
+                .append(handlerSpec.getHandlerClass()).toString());
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Logger.getLogger(this.getClass()).info("classLoader: "+classLoader);
+        Handler handler = (Handler)(classLoader.loadClass(handlerSpec.getHandlerClass()).newInstance());
+        handler.process(event);
     }
     
     /**
