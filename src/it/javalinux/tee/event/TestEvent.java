@@ -6,13 +6,33 @@
  */
 package it.javalinux.tee.event;
 
+import it.javalinux.tee.annotations.TeeEvent;
+import it.javalinux.tee.annotations.TeeEventInterceptor;
 
+@TeeEvent (TeeName="gino") 
 public class TestEvent implements Event {
 	private String fooString;
 	private Integer fooInteger;
 	private int fooInt;
 	private Float fooFloat;
 	
+	/**
+	 * @param fooString
+	 * @param fooInteger
+	 * @param fooInt
+	 * @param fooFloat
+	 */
+	@TeeEventInterceptor
+	public TestEvent(String fooString, Integer fooInteger, int fooInt, Float fooFloat) {
+		super();
+		// TODO Auto-generated constructor stub
+		this.fooString = fooString;
+		this.fooInteger = fooInteger;
+		this.fooInt = fooInt;
+		this.fooFloat = fooFloat;
+	}
+
+
 	public Float getFooFloat() {
 		return fooFloat;
 	}

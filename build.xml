@@ -106,7 +106,7 @@
 		<mkdir dir="${java.classes}" />
 		<javac destdir="${java.classes}" debug="on" deprecation="off">
 			<src path="${java.src}" />
-			<exclude name="**/*Test.java" />
+			<!--<exclude name="**/*Test.java" />-->
 			<src path="${prj.tempdir}/xdoclet/" />
 			<classpath refid="project.class.path" />
 		</javac>
@@ -119,6 +119,7 @@
 			<src path="${java.classes}"/>
 			<include name="**/Tee.class"/>
 			<include name="**/TestThread.class"/>
+			<include name="**/MapEvent.class"/>
 			<aoppath path="META-INF/jboss-aop.xml"/>
 			<aopclasspath path="/dati/jboss-aop_1.3/lib-50/jboss-aspect-library-jdk50.jar"/>
 		</aopc>
@@ -278,6 +279,14 @@
 	         <classpath refid="project.class.path"/>
 	      </java>
 	   </target>
+	 <target name="runTest" depends="compile">
+		      <java fork="yes" failOnError="true" className="it.javalinux.tee.interceptor.AOPInterceptorTest">
+		         <sysproperty key="jboss.aop.path" value="META-INF/jboss-aop.xml"/>
+		      	<sysproperty key="jboss.aop.class.path" value="."/>
+		         <jvmarg value="-javaagent:${aop50jar}"/>
+		         <classpath refid="project.class.path"/>
+		      </java>
+		   </target>
 
 	
 	

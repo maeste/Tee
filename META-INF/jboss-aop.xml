@@ -32,5 +32,11 @@
    <bind pointcut="execution(*->new(..)) AND hasfield(javax.transaction.TransactionManager *->@org.jboss.aspects.Injected)">
       <advice name="allocation" aspect="org.jboss.aspects.tx.TransactionManagerInjector"/>
    </bind>
+   <!--
+   <aspect class="it.javalinux.tee.interceptor.AOPInterceptor"/>
 
+   <bind pointcut="execution(it.javalinux.tee.event.MapEvent->new())">
+      <advice name="constructorAdvice" aspect="it.javalinux.tee.interceptor.AOPInterceptor"/>
+   </bind>
+   -->
 </aop>
