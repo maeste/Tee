@@ -29,7 +29,7 @@ public class AOPInterceptor
 {
 	//AND within(@it.javalinux.tee.annotations.TeeEvent)
    @Bind (pointcut="execution( @it.javalinux.tee.annotations.TeeEvent ->@it.javalinux.tee.annotations.TeeEventInterceptor(..)) ")
-   public Object interceptorAdvice(ConstructorInvocation invocation) throws Throwable
+   public Object interceptorAdvice(Invocation invocation) throws Throwable
    {
       try
       {
