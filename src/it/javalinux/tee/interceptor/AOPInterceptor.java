@@ -16,6 +16,7 @@ import java.io.StringWriter;
 import org.jboss.aop.Aspect;
 import org.jboss.aop.Bind;
 import org.jboss.aop.joinpoint.ConstructorInvocation;
+import org.jboss.aop.joinpoint.Invocation;
 import org.jboss.jmx.adaptor.rmi.RMIAdaptor;
 import org.jboss.logging.Logger;
 
@@ -33,7 +34,6 @@ public class AOPInterceptor
    {
       try
       {
-         System.out.println("<<< AOPInterceptor.interceptorAdvice accessing: " + invocation.getConstructor().toString());
          Object obj = invocation.invokeNext();
 		 //System.out.println(obj.toString());
 		 String teeName = ((TeeEvent) invocation.getAdvisor().resolveAnnotation(TeeEvent.class)).TeeName();
