@@ -26,7 +26,7 @@ import org.jboss.aspects.asynch.RemotableFuture;
 */
 public class MyExecutor implements ExecutorAbstraction
 {
-  private static ExecutorService executor =  Executors.newFixedThreadPool(5);
+  private static ExecutorService executor =  Executors.newFixedThreadPool(20);
   private Object s = new Integer(1);
 
   public void setAdvisor(Advisor advisor)

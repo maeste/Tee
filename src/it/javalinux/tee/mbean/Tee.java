@@ -324,6 +324,20 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 			return 0;
 		}
 	}
+
+
+	public void cleanAllStats() {
+		this.numberOfEventProcessed = new Long(0);
+		this.numberOfEventTransformed = new Long(0);
+		this.numberOfEventFailed = new Long(0);
+		this.totalProcessingTime = new Long(0);
+		this.maxProcessTime = new Long(0);
+		
+	}
+
+
+
+
 	
 	
 }

@@ -48,6 +48,9 @@ public interface TeeMBean extends ServiceMBean{
 	public int processAllDLQEvent();
 	
 	public int cleanDLQ();
+	
+	public void cleanAllStats();
+	
 
 	
 	
