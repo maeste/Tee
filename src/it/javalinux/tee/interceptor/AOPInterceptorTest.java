@@ -6,10 +6,7 @@
  */
 package it.javalinux.tee.interceptor;
 
-import it.javalinux.tee.annotations.TeeEvent;
-import it.javalinux.tee.event.MapEvent;
 import it.javalinux.tee.event.TestEvent;
-import junit.framework.TestCase;
 
 public class AOPInterceptorTest /*extends TestCase*/ {
 

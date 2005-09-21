@@ -31,7 +31,11 @@ public class TestEvent implements Event {
 		this.fooInt = fooInt;
 		this.fooFloat = fooFloat;
 	}
-
+	
+	public TestEvent() {
+		
+	}
+	
 
 	public Float getFooFloat() {
 		return fooFloat;
