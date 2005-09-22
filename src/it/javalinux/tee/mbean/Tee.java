@@ -47,10 +47,13 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
     private SpecificationDigester specDigester = null;
 	
 	private Long numberOfEventProcessed = new Long(0);
+	private Long numberOfHandlerProcessed = new Long(0);
 	private Long numberOfEventTransformed = new Long(0);
 	private Long numberOfEventFailed = new Long(0);
 	private Long totalProcessingTime = new Long(0);
 	private Long maxProcessTime = new Long(0);
+	private Long totalProcessingEventTime = new Long(0);
+	private Long maxProcessEventTime = new Long(0);
 	
 	@Injected TransactionManager tm;
 	
@@ -127,14 +130,21 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 		        if (obj!=null) {
 		            EventSpec eventSpec = (EventSpec)obj;
 		            if (eventSpec.getHandlerSpecList().size()>0 || eventSpec.getTransportSpecList().size()>0) {
-		                for (Iterator it = eventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
+						long startProcessingEventTime = System.currentTimeMillis();
+						for (Iterator it = eventSpec.getHandlerSpecList().iterator(); it.hasNext(); ) {
 							long startProcessingTime = System.currentTimeMillis();
 		                    helper.processWithHandler(event, (HandlerSpec)it.next());
 							long processTime = (System.currentTimeMillis() - startProcessingTime);
-							this.numberOfEventProcessed = new Long(this.numberOfEventProcessed.longValue() + 1);
+							this.numberOfHandlerProcessed = new Long(this.numberOfHandlerProcessed.longValue() + 1);
 							this.totalProcessingTime = this.totalProcessingTime + processTime;
 							if (this.maxProcessTime < processTime ) {
 								this.maxProcessTime = processTime;
+							}
+							long processEventTime = (System.currentTimeMillis() - startProcessingEventTime);
+							this.numberOfEventProcessed = new Long(this.numberOfEventProcessed.longValue() + 1);
+							this.totalProcessingEventTime = this.totalProcessingEventTime + processEventTime;
+							if (this.maxProcessEventTime < processEventTime ) {
+								this.maxProcessEventTime = processEventTime;
 							}
 		                }
 		                for (Iterator it = eventSpec.getTransportSpecList().iterator(); it.hasNext(); ) {
@@ -244,7 +254,25 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 
 
 	public Double getAvarageProcessingTime() {
-		return new Double((double)this.totalProcessingTime/(double)this.numberOfEventProcessed);
+		return new Double((double)this.totalProcessingTime/(double)this.numberOfHandlerProcessed);
+	}
+	
+
+
+	
+
+
+	public Long getNumberOfHandelrProcessed() {
+		return numberOfHandlerProcessed;
+	}
+
+
+	public Long getMaxProcessEventTime() {
+		return maxProcessEventTime;
+	}
+
+	public Double getAvarageProcessingEvetTime() {
+		return new Double((double)this.totalProcessingEventTime/((double)this.numberOfEventProcessed + (double) this.numberOfEventFailed));
 	}
 	
 
@@ -268,7 +296,6 @@ public class Tee extends ServiceMBeanSupport implements TeeMBean  {
 	public Long getMaxProcessTime() {
 		return maxProcessTime;
 	}
-
 
 	public String viewFirstDLQEvent() {
 		try {

@@ -26,7 +26,8 @@ import org.jboss.aspects.asynch.RemotableFuture;
 */
 public class MyExecutor implements ExecutorAbstraction
 {
-  private static ExecutorService executor =  Executors.newFixedThreadPool(20);
+	private static int NUMBER_OF_THREAD = 20;
+  private static ExecutorService executor =  Executors.newFixedThreadPool(NUMBER_OF_THREAD);
   private Object s = new Integer(1);
 
   public void setAdvisor(Advisor advisor)
@@ -39,7 +40,7 @@ public class MyExecutor implements ExecutorAbstraction
      final MethodInvocation copy = (MethodInvocation) invocation.copy();
      final ClassLoader cl = Thread.currentThread().getContextClassLoader();
      synchronized (s) {
-		 while (((ThreadPoolExecutor) executor).getActiveCount()> 4){
+		 while (((ThreadPoolExecutor) executor).getActiveCount()>= NUMBER_OF_THREAD){
 			 s.wait();
 			 
 	     }

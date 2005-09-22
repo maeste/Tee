@@ -18,7 +18,7 @@ public class TestThread {
 	public static void main(String[] args) {
 		System.out.println(TestThread.class.getAnnotations().length);
 		TestThread test = new TestThread();
-		for (int i = 0; i < 15; i++) {
+		for (int i = 0; i < 150; i++) {
 			System.out.println("starting thread #" + i);
 			test.testThreadExec(i);
 		}
@@ -38,7 +38,7 @@ public class TestThread {
 		}
 		System.out.println("quitting thread #"+input);
 		
-		if (input==14) System.exit(0);
+		if (input==149) System.exit(0);
 		return input;
 	}
 
