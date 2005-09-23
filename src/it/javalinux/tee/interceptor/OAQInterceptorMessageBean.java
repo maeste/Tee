@@ -47,6 +47,7 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
      */
 	public void onMessage(Message arg0) {
 	    try {
+			Long time=arg0.getJMSTimestamp();
 	        Logger.getLogger(this.getClass()).debug("Message received...");
 	        Event event = (Event)((AQjmsAdtMessage)arg0).getAdtPayload();
 	        Logger.getLogger(this.getClass()).debug(event.getClass());
@@ -54,6 +55,7 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
 				XMLEvent xmlEvent = (XMLEvent)event;
 				xmlEvent.setXmlString(xmlEvent.getXmlString());
 			}
+			event.setInterceptionTimeMillis(time);
 			this.intercept(event);
 	    } catch (Exception e) {
 	        Logger.getLogger(this.getClass()).error("Error while enqueueing!");
@@ -71,7 +73,7 @@ public class OAQInterceptorMessageBean implements MessageDrivenBean, MessageList
             String jndiName = "it.javalinux:service="+teeName;
             Object[] parArray = {event};
             String[] signArray = {"it.javalinux.tee.event.Event"};
-			event.setInterceptionTimeMillis(new Long(System.currentTimeMillis()));
+			
             ServiceLocator.getInstance().callMBean(jndiName,"process",parArray, signArray);
         } catch (Exception e) {
             Logger.getLogger(this.getClass()).error("Error calling Tee service!");
