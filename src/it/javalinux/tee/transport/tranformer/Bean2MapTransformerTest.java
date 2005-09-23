@@ -20,11 +20,13 @@ public class Bean2MapTransformerTest extends TestCase {
 	}
 
 	public void testTransform() {
+		Long date = new Long(System.currentTimeMillis());
 		TestEvent testEvent= new TestEvent();
 		testEvent.setFooString("fooString");
 		testEvent.setFooInteger(new Integer(1));
 		testEvent.setFooInt(10);
 		testEvent.setFooFloat(new Float(10.34));
+		testEvent.setInterceptionTimeMillis(date);
 		MapEvent mapEvent = new MapEvent();
 		HashMap<String,Object> testMap = new HashMap<String,Object>();
 		testMap.put("EventName","it.javalinux.tee.event.TestEvent");
@@ -33,6 +35,8 @@ public class Bean2MapTransformerTest extends TestCase {
 		testMap.put("fooInt","10");
 		testMap.put("fooFloat","10.34");
 		mapEvent.setMap(testMap);
+		mapEvent.setInterceptionTimeMillis(date);
+		
 		Bean2MapTransformer transformer = new Bean2MapTransformer();
 		try {
 			MapEvent transformedEvent = (MapEvent) transformer.transform(testEvent);

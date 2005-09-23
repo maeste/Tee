@@ -15,6 +15,7 @@ public class TestEvent implements Event {
 	private Integer fooInteger;
 	private int fooInt;
 	private Float fooFloat;
+	private Long interceptionTimeMillis;
 	
 	/**
 	 * @param fooString
@@ -36,6 +37,13 @@ public class TestEvent implements Event {
 		
 	}
 	
+	public Long getInterceptionTimeMillis() {
+		return this.interceptionTimeMillis;
+	}
+	
+	public void setInterceptionTimeMillis(Long interceptionTimeMillis) {
+		this.interceptionTimeMillis = interceptionTimeMillis;
+	}
 
 	public Float getFooFloat() {
 		return fooFloat;
@@ -78,7 +86,7 @@ public class TestEvent implements Event {
 	
 
 	public String toString() {
-	    return "fooString: "+fooString+" fooInteger: "+fooInteger+" fooFloat: "+fooFloat+" fooint: "+fooInt;
+	    return "interceptionTimeMillis: "+interceptionTimeMillis+" fooString: "+fooString+" fooInteger: "+fooInteger+" fooFloat: "+fooFloat+" fooint: "+fooInt;
     }
 
 

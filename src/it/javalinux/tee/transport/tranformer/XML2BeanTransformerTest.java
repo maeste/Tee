@@ -18,6 +18,7 @@ public class XML2BeanTransformerTest extends TestCase {
 
 	public void testTransform() {
 		try {
+			Long date = new Long(System.currentTimeMillis());
 			XMLEvent xmlEvent = new XMLEvent();
 		
 			xmlEvent.setXmlString("<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
@@ -28,8 +29,10 @@ public class XML2BeanTransformerTest extends TestCase {
 					"<fooInt>10</fooInt>" +
 					"<fooFloat>10.34</fooFloat>" +
 					"</XmlEvent>");
+			xmlEvent.setInterceptionTimeMillis(date);
 			XML2BeanTransformer transformer = new XML2BeanTransformer();
 			TestEvent testEvent = (TestEvent) transformer.transform(xmlEvent);
+			System.out.println(testEvent);
 			assertEquals(testEvent.getFooString(),"fooString");
 			assertEquals(testEvent.getFooInteger(),new Integer(1));
 			assertEquals(testEvent.getFooInt(),10);

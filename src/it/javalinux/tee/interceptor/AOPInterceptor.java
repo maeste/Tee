@@ -95,6 +95,7 @@ public class AOPInterceptor
 		   String jndiName = "it.javalinux:service="+teeName;
            Object[] parArray = {event};
            String[] signArray = {"it.javalinux.tee.event.Event"};
+		   event.setInterceptionTimeMillis(new Long(System.currentTimeMillis()));
 		   ServiceLocator.getInstance().callMBean(jndiName,"process",parArray, signArray);
        } catch (Exception e) {
            Logger.getLogger(this.getClass()).error("Error calling Tee service!");

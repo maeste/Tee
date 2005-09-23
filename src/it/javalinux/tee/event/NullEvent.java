@@ -1,9 +1,11 @@
 package it.javalinux.tee.event;
 
 
+
 public final class NullEvent implements Event {
 	
 	private String message;
+	private Long interceptionTimeMillis;
 	
 	public NullEvent() {
 		
@@ -13,6 +15,14 @@ public final class NullEvent implements Event {
 		this.message = message;
 	}
 
+	public Long getInterceptionTimeMillis() {
+		return this.interceptionTimeMillis;
+	}
+	
+	public void setInterceptionTimeMillis(Long interceptionTimeMillis) {
+		this.interceptionTimeMillis = interceptionTimeMillis;
+	}
+	
 	public String getMessage() {
 		return message;
 	}
@@ -22,7 +32,7 @@ public final class NullEvent implements Event {
 	}
 	
 	public String toString() {
-		return super.toString()+" Message: "+message;
+		return super.toString()+" InterceptionTimeMillis: "+interceptionTimeMillis+" Message: "+message;
 	}
 	
 	

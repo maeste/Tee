@@ -24,9 +24,10 @@ public class Bean2MapTransformer implements TransformerInterface {
 			HashMap<String,Object> internalMap = new HashMap<String,Object>();
 			internalMap.putAll(map);
 			internalMap.remove("class");
+			internalMap.remove("interceptionTimeMillis");
 			internalMap.put("EventName",inputEvent.getClass().getCanonicalName());
 			returnEvent.setMap(internalMap);
-			
+			returnEvent.setInterceptionTimeMillis(inputEvent.getInterceptionTimeMillis());
 		} catch (Exception e) {
 			throw new TransformationException("unable to transform event:" + inputEvent.toString() + "caused by Exception:" + e.getMessage());
 		}

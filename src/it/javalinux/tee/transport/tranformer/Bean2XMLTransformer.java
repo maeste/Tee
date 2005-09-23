@@ -28,13 +28,17 @@ public class Bean2XMLTransformer implements TransformerInterface {
 			strWriter.write("<EventName>"+ inputEvent.getClass().getCanonicalName()+"</EventName>");
 			Map propertyMap = BeanUtils.describe(inputEvent);
 			for (Object propertyName : propertyMap.keySet() ) {
-				if (!"class".equals(propertyName) && propertyMap.get(propertyName)!=null) {
+				if (!"class".equals(propertyName) && !"interceptionTimeMillis".equals(propertyName) &&
+						propertyMap.get(propertyName)!=null) {
 					strWriter.write("<" + propertyName + ">");
 					strWriter.write(propertyMap.get(propertyName).toString());
 					strWriter.write("</" + propertyName + ">");
 				}
 				
 			}
+			try {
+				returnEvent.setInterceptionTimeMillis(Long.parseLong((String)propertyMap.get("interceptionTimeMillis")));
+			} catch (Exception e) {}
 			strWriter.write("</XmlEvent>");
 		}catch (Exception e) {
 			e.printStackTrace();

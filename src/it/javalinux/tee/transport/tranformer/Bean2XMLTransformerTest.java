@@ -19,6 +19,7 @@ public class Bean2XMLTransformerTest extends TestCase {
 	public void testTransform() {
 		try {
 			XMLEvent xmlEvent = new XMLEvent();
+			Long date= new Long(System.currentTimeMillis());
 		
 			xmlEvent.setXmlString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<XmlEvent>" +
@@ -28,8 +29,10 @@ public class Bean2XMLTransformerTest extends TestCase {
 					"<fooFloat>10.34</fooFloat>" +
 					"<fooInt>10</fooInt>" +
 					"</XmlEvent>");
+			xmlEvent.setInterceptionTimeMillis(date);
 			TestEvent testEvent= new TestEvent();
 			testEvent.setFooString("fooString");
+			testEvent.setInterceptionTimeMillis(date);
 			//testEvent.setFooInteger(new Integer(1));
 			//testEvent.setFooInt(10);
 			//testEvent.setFooFloat(new Float(10.34));

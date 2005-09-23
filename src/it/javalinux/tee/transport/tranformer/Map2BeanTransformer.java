@@ -44,8 +44,8 @@ public class Map2BeanTransformer implements TransformerInterface {
 			} catch (Exception e) {
 				throw new IllegalArgumentException("Check your xml.I Can't set this property:" + key);
 			}
-			
 		}
+		bean.setInterceptionTimeMillis(inputEvent.getInterceptionTimeMillis());
 		return bean;
 	}
 

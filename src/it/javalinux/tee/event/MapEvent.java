@@ -14,14 +14,26 @@ import java.util.HashMap;
 public class MapEvent implements Event, Serializable {
     
     private HashMap<String,Object> map = new HashMap<String,Object>();
+	private Long interceptionTimeMillis = null;
     
     public MapEvent() {
         
     }
-
+	
+	public Long getInterceptionTimeMillis() {
+		return this.interceptionTimeMillis;
+	}
+	
+	public void setInterceptionTimeMillis(Long interceptionTimeMillis) {
+		this.interceptionTimeMillis = interceptionTimeMillis;
+	}
     
     public String toString() {
-        return this.map.toString();
+		StringBuffer sb = new StringBuffer("Event intercepted at ");
+		sb.append(this.getInterceptionTimeMillis());
+		sb.append(": ");
+		sb.append(map.toString());
+        return sb.toString();
     }
     
     

@@ -12,5 +12,9 @@ import java.io.Serializable;
  *
  */
 public interface Event extends Serializable {
-
+	
+	public Long getInterceptionTimeMillis();
+	
+	public void setInterceptionTimeMillis(Long interceptionTimeMillis);
+	
 }

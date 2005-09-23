@@ -68,8 +68,8 @@ public class XML2BeanTransformer implements TransformerInterface {
                 e.printStackTrace();
 				throw new IllegalArgumentException("Check your xml.I Can't set this property:" + nodes.item(i).getNodeName());
 			}
-			
 		}
+		bean.setInterceptionTimeMillis(inputEvent.getInterceptionTimeMillis());
 		return bean;
 	}
 

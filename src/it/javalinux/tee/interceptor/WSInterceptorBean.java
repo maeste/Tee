@@ -48,6 +48,7 @@ public class WSInterceptorBean implements Interceptor, SessionBean {
             String jndiName = "it.javalinux:service="+teeName;
             Object[] parArray = {event};
             String[] signArray = {"it.javalinux.tee.event.Event"};
+			event.setInterceptionTimeMillis(new Long(System.currentTimeMillis()));
             ServiceLocator.getInstance().callMBean(jndiName,"process",parArray, signArray);
 			Logger.getLogger(this.getClass()).debug("Rollback:"+ this.sessionContext.getRollbackOnly());
 		} catch (Exception e) {

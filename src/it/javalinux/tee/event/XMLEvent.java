@@ -7,9 +7,19 @@
 package it.javalinux.tee.event;
 
 
+
 public class XMLEvent implements Event {
 	protected String xmlString;
-
+	private Long interceptionTimeMillis;
+	
+	public Long getInterceptionTimeMillis() {
+		return this.interceptionTimeMillis;
+	}
+	
+	public void setInterceptionTimeMillis(Long interceptionTimeMillis) {
+		this.interceptionTimeMillis = interceptionTimeMillis;
+	}
+	
 	public String getXmlString() {
 		return xmlString;
 	}
@@ -21,7 +31,11 @@ public class XMLEvent implements Event {
 
 
 	public String toString() {
-		return this.getXmlString();
+		StringBuffer sb = new StringBuffer("Event intercepted at ");
+		sb.append(this.getInterceptionTimeMillis());
+		sb.append(": ");
+		sb.append(this.getXmlString());
+        return sb.toString();
 	}
 
 
