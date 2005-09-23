@@ -56,7 +56,7 @@ public class TeeHelper {
         Logger.getLogger(this.getClass()).debug(new StringBuffer("Passing event to handler class ")
                 .append(handlerSpec.getHandlerClass()).toString());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Logger.getLogger(this.getClass()).info("classLoader: "+classLoader);
+        Logger.getLogger(this.getClass()).debug("classLoader: "+classLoader);
         Handler handler = (Handler)(classLoader.loadClass(handlerSpec.getHandlerClass()).newInstance());
         handler.process(event);
     }

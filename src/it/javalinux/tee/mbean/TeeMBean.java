@@ -37,17 +37,16 @@ public interface TeeMBean extends ServiceMBean{
 	
 	public Long getNumberOfEventFailed();
 	
-	public Double getAvarageProcessingTime();
+	public Double getAverageProcessingTime();
+	
+	public Double getAverageProcessingEventTime();
 	
 	public Long getMaxProcessTime();
 	
-	public Long getNumberOfHandelrProcessed();
-
-
 	public Long getMaxProcessEventTime();
 
-	public Double getAvarageProcessingEvetTime();
-	
+	public Long getNumberOfHandlerProcessed();
+
 	public String viewFirstDLQEvent();
 	
 	public int processFirstDLQEvent();
