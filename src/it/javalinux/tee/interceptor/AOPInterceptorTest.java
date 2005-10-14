@@ -19,7 +19,7 @@ public class AOPInterceptorTest /*extends TestCase*/ {
 	public void testConstructorAdvice() {
 		
 		TestEvent map = new TestEvent("aa",new Integer(1),2,new Float(5.5));
-		
+		map.pippo();
 		//this.assertTrue(true);
 	}
 

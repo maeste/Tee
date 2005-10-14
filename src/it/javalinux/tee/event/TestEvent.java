@@ -37,6 +37,11 @@ public class TestEvent implements Event {
 		
 	}
 	
+	@TeeEventInterceptor
+	public void pippo(){
+		System.out.print("aaa");
+	}
+	
 	public Long getInterceptionTimeMillis() {
 		return this.interceptionTimeMillis;
 	}

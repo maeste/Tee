@@ -54,6 +54,7 @@
 		<pathelement path="/dati/jboss-aop_1.3/lib-50/jboss-aop-jdk50.jar"/>
 		<pathelement path="/dati/jboss-aop_1.3/lib-50/javassist.jar"/>
 		<pathelement path="/dati/jboss-aop_1.3/lib-50/trove.jar"/>
+		<pathelement location="${prj.libs2}/log4j.jar" />
 		<pathelement location="${prj.libs2}/junit.jar" />
 	</path>
 	

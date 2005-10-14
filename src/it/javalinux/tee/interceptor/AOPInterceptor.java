@@ -28,7 +28,8 @@ import org.jboss.logging.Logger;
 public class AOPInterceptor
 {
 	//AND within(@it.javalinux.tee.annotations.TeeEvent)
-   @Bind (pointcut="execution( @it.javalinux.tee.annotations.TeeEvent ->@it.javalinux.tee.annotations.TeeEventInterceptor(..)) ")
+   @Bind (pointcut="execution( * @it.javalinux.tee.annotations.TeeEvent->@it.javalinux.tee.annotations.TeeEventInterceptor(..)) OR " +
+   		"execution( @it.javalinux.tee.annotations.TeeEvent->@it.javalinux.tee.annotations.TeeEventInterceptor(..)) ")
    public Object interceptorAdvice(Invocation invocation) throws Throwable
    {
       try
