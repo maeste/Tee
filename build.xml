@@ -25,6 +25,7 @@
 	
 	<path id="project.class.path">
 		<pathelement path="${classpath}" />
+		<pathelement path="${java.classes}" />
 		<pathelement path="/dati/project/Tee_trk/classes" />
 		<pathelement location="${prj.libs}/jboss-common.jar" />
 		<pathelement location="${prj.libs2}/jdom.jar" />
@@ -121,6 +122,7 @@
 			<include name="**/Tee.class"/>
 			<include name="**/TestThread.class"/>
 			<include name="**/MapEvent.class"/>
+			<include name="**/AOPInterceptor.class"/>
 			<aoppath path="META-INF/jboss-aop.xml"/>
 			<aopclasspath path="/dati/jboss-aop_1.3/lib-50/jboss-aspect-library-jdk50.jar"/>
 		</aopc>
@@ -150,7 +152,8 @@
 			<fileset dir="xsl" />
 			<fileset file="jboss-tee.xsd"/>
 			<fileset file="tee-events.xsd"/>
-			<fileset file="META-INF/jboss-aop.xml"/>
+			<!--fileset file="META-INF/jboss-aop.xml"/-->
+			<metainf dir="META-INF/" includes="jboss-aop.xml"/>
 		</jar>
 		
 		<mkdir dir="${dist.temp}/aop" />

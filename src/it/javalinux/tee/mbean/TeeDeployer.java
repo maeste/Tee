@@ -181,13 +181,16 @@ public class TeeDeployer extends SubDeployerSupport implements SubDeployer, TeeD
 				new DeploymentInfo(wsr.toURL(), di, getServer());
 			}
 			
-            //enable aop
-            File aopXml = new File(tempDeploySubDirPrefix+"-aop.xml");
-            aopXml.createNewFile();
-            InputStream is = Tee.class.getResourceAsStream("/jboss-aop.xml"); //is there a better way?
-            this.writeFile(is, aopXml);
-            log.info("generated file: "+aopXml.getAbsolutePath());
-            new DeploymentInfo(aopXml.toURL(), di, getServer());
+            //enable aop 
+			//commentanto perché non serve; per abilitare l'aop basta che jboss-aop.xml stia in META-INF
+			//nella TeeLib depositata in /lib; le singole istanze di Tee non avranno bisogno di un loro
+			//jboss-aop.xml apposito.
+//            File aopXml = new File(tempDeploySubDirPrefix+"-aop.xml");
+//            aopXml.createNewFile();
+//            InputStream is = Tee.class.getResourceAsStream("/META-INF/jboss-aop.xml"); //is there a better way?
+//            this.writeFile(is, aopXml);
+//            log.info("generated file: "+aopXml.getAbsolutePath());
+//            new DeploymentInfo(aopXml.toURL(), di, getServer());
             
 			//deploy nested jars (containing events for example)
 			File parentDir = null;
