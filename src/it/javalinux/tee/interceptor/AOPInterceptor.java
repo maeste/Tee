@@ -15,7 +15,9 @@ import java.io.StringWriter;
 
 import org.jboss.aop.Aspect;
 import org.jboss.aop.Bind;
+import org.jboss.aop.joinpoint.ConstructorInvocation;
 import org.jboss.aop.joinpoint.Invocation;
+import org.jboss.aop.joinpoint.MethodInvocation;
 import org.jboss.jmx.adaptor.rmi.RMIAdaptor;
 import org.jboss.logging.Logger;
 
@@ -34,18 +36,24 @@ public class AOPInterceptor
    {
       try
       {
-         Object obj = invocation.invokeNext();
-		 //System.out.println(obj.toString());
-		 String teeName = ((TeeEvent) invocation.getAdvisor().resolveAnnotation(TeeEvent.class)).TeeName();
-		 this.intercept((Event) obj,teeName);
-		 return obj;
-      } catch (Exception e) {
+		  Object obj = null;
+		  if (invocation instanceof ConstructorInvocation) {
+			  obj = invocation.invokeNext();
+		  } else {
+			  invocation.invokeNext();
+			  obj = invocation.getTargetObject();
+			  
+		  }
+		  //System.out.println(obj.toString());
+		  String teeName = ((TeeEvent) invocation.getAdvisor().resolveAnnotation(TeeEvent.class)).TeeName();
+		  this.intercept((Event) obj,teeName);
+		  return obj;
+	  } catch (Exception e) {
 		  e.printStackTrace();
 		  throw e;
-      }finally
-      {
-         System.out.println(">>> Leaving AOPInterceptor.interceptorAdvice");
-      }
+	  } finally {
+		  System.out.println(">>> Leaving AOPInterceptor.interceptorAdvice");
+	  }
    }
 //
 //   @Bind (pointcut="execution(void POJO->method())")
