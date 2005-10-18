@@ -17,7 +17,6 @@ import org.jboss.aop.Aspect;
 import org.jboss.aop.Bind;
 import org.jboss.aop.joinpoint.ConstructorInvocation;
 import org.jboss.aop.joinpoint.Invocation;
-import org.jboss.aop.joinpoint.MethodInvocation;
 import org.jboss.jmx.adaptor.rmi.RMIAdaptor;
 import org.jboss.logging.Logger;
 
