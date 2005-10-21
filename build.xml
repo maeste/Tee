@@ -148,6 +148,7 @@
 		
 		<mkdir dir="${dist.temp}/jar-lib" />
 		<jar jarfile="${dist.temp}/jar-lib/${prj.appname}Lib.jar">
+			<!--<fileset dir="${java.classes}" excludes="**/AOPInterceptor.class,**/annotations/**"/>-->
 			<fileset dir="${java.classes}" />
 			<fileset dir="xsl" />
 			<fileset file="jboss-tee.xsd"/>
@@ -158,6 +159,7 @@
 		
 		<mkdir dir="${dist.temp}/aop" />
 		<jar jarfile="${dist.temp}/aop/${prj.appname}.aop">
+			<!--fileset dir="${java.classes}" includes="**/AOPInterceptor.class,**/annotations/**"/-->
 			<metainf dir="META-INF/" includes="jboss-aop.xml"/>
 		</jar>
 				
