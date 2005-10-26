@@ -6,10 +6,12 @@
  */
 package it.javalinux.tee.annotations;
 
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention (RetentionPolicy.RUNTIME)
+@Inherited
 public @interface TeeEvent {
  String TeeName();
 }
