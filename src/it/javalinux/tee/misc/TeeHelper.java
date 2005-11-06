@@ -5,6 +5,7 @@
 package it.javalinux.tee.misc;
 
 import it.javalinux.tee.event.Event;
+import it.javalinux.tee.event.MailAttachment;
 import it.javalinux.tee.exception.TransformationException;
 import it.javalinux.tee.handler.Handler;
 import it.javalinux.tee.specification.AttributeSpec;
@@ -32,7 +33,11 @@ import it.javalinux.tee.transport.tranformer.Map2BeanTransformer;
 import it.javalinux.tee.transport.tranformer.TransformerInterface;
 import it.javalinux.tee.transport.tranformer.XML2BeanTransformer;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -62,8 +67,8 @@ public class TeeHelper {
     }
     
     /**
-     * Obtains a new instance of the Transport specified by transportSpec, populates it with the required parameters
-     * according to its type, then passes it the event to be processed.
+     * Obtains a new instance of the Transport specified by transportSpec, populates it with the
+     * required parameters according to its type, then passes it the event to be processed.
      *  
      * @param event
      * @param transportSpec
@@ -118,6 +123,9 @@ public class TeeHelper {
 				transport.setBody((String)propertyMap.get(spec.getBody()));
 			} else { //Custom
 				transport.setBody(spec.getBody());
+			}
+			if (spec.isSearchForAttachments()) {
+				transport.setAttachments(this.getAttachments(event.getClass(),event));
 			}
             transport.process(event);
         } else if (specializedTransport instanceof HibernateTransportSpec) {
@@ -191,5 +199,48 @@ public class TeeHelper {
         }
         return result;
     }
+	
+	
+	/**
+	 * This method scans the target object and looks for fields being 
+	 * instance of MailAttachment or a collection of it.
+	 * Returns a list containing those MailAttachment fields.
+	 * 
+	 * @param cl
+	 * @param targetObj
+	 * @return
+	 * @throws Exception
+	 */
+	private List<MailAttachment> getAttachments(Class cl, Object targetObj) throws Exception {
+		List<MailAttachment> attList = new ArrayList<MailAttachment>();
+		Field[] fields = cl.getDeclaredFields(); //extract public fields only...
+		Field f = null;
+		int i=0;
+		while (i<fields.length) {
+			boolean wasAccessible = fields[i].isAccessible();
+			fields[i].setAccessible(true);
+			Object obj = fields[i].get(targetObj);
+			if (obj!=null) {
+				if (obj instanceof MailAttachment) {
+					attList.add((MailAttachment)obj);
+				} else if (obj instanceof Collection) {
+					for (Iterator it=((Collection)obj).iterator(); it.hasNext(); ) {
+						Object element = it.next();
+						if (element instanceof MailAttachment) {
+							attList.add((MailAttachment)element);
+						}
+					}
+				}
+			}
+			if (!wasAccessible) {
+				fields[i].setAccessible(false);
+			}
+			i++;
+		}
+		if (cl.getSuperclass()!=null) {
+			attList.addAll(this.getAttachments(cl.getSuperclass(),targetObj)); //let's check the superclass...
+		}
+		return attList;
+	}
 	
 }

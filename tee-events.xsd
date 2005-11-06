@@ -125,6 +125,8 @@
 									</xs:choice>
 								</xs:complexType>
 							</xs:element>
+							<xs:element name="SearchAttachments">
+							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>

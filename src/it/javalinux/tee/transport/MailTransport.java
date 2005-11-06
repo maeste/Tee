@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.activation.DataHandler;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Multipart;
@@ -20,6 +21,8 @@ import javax.naming.InitialContext;
 import org.jboss.logging.Logger;
 
 import it.javalinux.tee.event.Event;
+import it.javalinux.tee.event.MailAttachment;
+import it.javalinux.tee.misc.ByteArrayDataSource;
 
 public class MailTransport implements Transport {
 	
@@ -28,6 +31,7 @@ public class MailTransport implements Transport {
 	private String bcc;
 	private String subject;
 	private String body;
+	private List<MailAttachment> attachments;
 	
 	public void process(Event event) {
 		try {
@@ -116,6 +120,24 @@ public class MailTransport implements Transport {
 		MimeBodyPart msgBody = new MimeBodyPart();
 		msgBody.setText(message);
 		multipart.addBodyPart(msgBody);
+		if (attachments!=null && !attachments.isEmpty()) {
+			for (Iterator it=attachments.iterator(); it.hasNext(); ) {
+				MailAttachment at = (MailAttachment)it.next();
+				if (at.getData()==null || at.getFilename()==null || at.getMimeType()==null) {
+					Logger.getLogger(this.getClass()).warn("Some required data for email attachment are missing... skipping attachment");
+				} else {
+					try {
+						MimeBodyPart atPart = new MimeBodyPart();
+						atPart.setDataHandler(new DataHandler(new ByteArrayDataSource(at.getData(),at.getMimeType())));
+						atPart.setFileName(at.getFilename());
+						multipart.addBodyPart(atPart);
+					} catch (Exception e) {
+						Logger.getLogger(this.getClass()).error("An error occured while processing attachment "+at.getFilename()+"... skipping it");
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 		msg.setContent(multipart);
 		javax.mail.Transport.send(msg);
 		StringBuffer sb = new StringBuffer("Email sent, TO: ");
@@ -185,6 +207,18 @@ public class MailTransport implements Transport {
 	public void setTo(String to) {
 		this.to = to;
 	}
+
+
+	public List<MailAttachment> getAttachments() {
+		return attachments;
+	}
+	
+
+
+	public void setAttachments(List<MailAttachment> attachments) {
+		this.attachments = attachments;
+	}
+	
 	
 	
 }

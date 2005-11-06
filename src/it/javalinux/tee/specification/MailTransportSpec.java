@@ -1,5 +1,6 @@
 package it.javalinux.tee.specification;
 
+
 public class MailTransportSpec implements TransportSpecInterface {
 	
 	public static final String EVENT_ATTRIBUTE = "EventAttribute";
@@ -15,6 +16,7 @@ public class MailTransportSpec implements TransportSpecInterface {
 	private String subjectType;
 	private String body;
 	private String bodyType;
+	private boolean searchForAttachments = false;
 	private TransformerSpec transformerSpec;
 	
 	
@@ -105,6 +107,8 @@ public class MailTransportSpec implements TransportSpecInterface {
 		sb.append("% bcc: %").append(bcc).append("% bccType: %").append(bccType);
 		sb.append("% subject: %").append(subject).append("% subjectType: %").append(subjectType);
 		sb.append("% body: %").append(body).append("% bodyType: %").append(bodyType);
+		sb.append("% attachments: %").append(searchForAttachments);
+		sb.append("%");
 		return sb.toString();
     }
 
@@ -156,4 +160,11 @@ public class MailTransportSpec implements TransportSpecInterface {
 		this.bodyType = CUSTOM;
 	}
 	
+	public void setSearchForAttachments() {
+		this.searchForAttachments = true;
+	}
+	
+	public boolean isSearchForAttachments() {
+		return this.searchForAttachments;
+	}
 }

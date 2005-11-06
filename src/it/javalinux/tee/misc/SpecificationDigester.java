@@ -122,6 +122,7 @@ public class SpecificationDigester {
 	        digester.addCallMethod("*/Transport/MailTransport/Body/EventAttribute", "setBody", 0);
 	        digester.addCallMethod("*/Transport/MailTransport/Body/Custom", "setBodyCustomType");
 	        digester.addCallMethod("*/Transport/MailTransport/Body/Custom", "setBody", 0);
+			digester.addCallMethod("*/Transport/MailTransport/SearchForAttachments", "setSearchForAttachments");
 			
 			//TeeTransport
 			digester.addObjectCreate("*/Transport/TeeTransport", SPEC_PCKG+".TeeTransportSpec");
